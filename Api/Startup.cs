@@ -1,6 +1,7 @@
 ﻿using System;
-using Api.Data;
+using Api.Exstensions;
 using Api.Models;
+using Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -27,28 +28,11 @@ namespace Api
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+            services.ConfigureIdentity();
+            
+            //services.ConfigureCors();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = false;
-                options.Password.RequiredUniqueChars = 6;
-
-                // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                options.Lockout.MaxFailedAccessAttempts = 10;
-                options.Lockout.AllowedForNewUsers = true;
-
-                // User settings
-                options.User.RequireUniqueEmail = true;
-            });
+            services.ConfigureRepositoryWrapper();
 
             services.AddMvc();
         }
@@ -60,6 +44,8 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //app.UseCors("CorsPolicy");
 
             app.UseMvc();
         }

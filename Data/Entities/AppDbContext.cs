@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Api.Models;
+﻿using Entities.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Data
+namespace Entities
 {
     public class AppDbContext : IdentityDbContext<User>
     {
@@ -15,5 +10,9 @@ namespace Api.Data
         {
 
         }
+        
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<InventoryItem> InventoryItems { get; set; }
     }
 }
