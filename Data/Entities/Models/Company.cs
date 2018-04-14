@@ -10,6 +10,6 @@ namespace Entities.Models
         public string Address { get; set; }
         public DateTime ValidLicenceTill { get; set; }
         public string ContactPerson { get; set; }
-        public List<Category> Categories { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }

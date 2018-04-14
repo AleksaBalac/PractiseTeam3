@@ -8,6 +8,6 @@ namespace Entities.Models
         public string Name { get; set; }
         public Company Company { get; set; }
         public string CompanyId { get; set; }
-        public virtual List<InventoryItem> Items { get; set; }
+        public ICollection<InventoryItem> Items { get; set; }
     }
 }
