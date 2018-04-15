@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Data\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\Data\Entities\Entities.csproj" />
     <ProjectReference Include="..\Data\Repository\Repository.csproj" />
+    <ProjectReference Include="..\Data\ViewModels\ViewModels\ViewModels.csproj" />
     <ProjectReference Include="..\Web\Web.csproj" />
   </ItemGroup>
 

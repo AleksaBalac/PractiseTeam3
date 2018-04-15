@@ -28,7 +28,7 @@ namespace Api
 
             services.ConfigureIdentity();
             
-            //services.ConfigureCors();
+            services.ConfigureCors();
 
             services.ConfigureRepositoryWrapper();
 
@@ -47,9 +47,11 @@ namespace Api
 
             seeder.SeedAdminUser();
 
-            //app.UseCors("CorsPolicy");
+            app.UseCors("CorsPolicy");
 
             app.UseMvc();
+
+            app.UseAuthentication();
         }
     }
 }

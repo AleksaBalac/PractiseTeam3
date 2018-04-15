@@ -11,8 +11,8 @@ export class AccountService extends ServiceHelper {
     super();
   }
 
-  login(user:any) {
-    return this.http.post(this.apiAddress + '/login', this.generateHeaders());
+  login(user: any) {
+    return this.http.post(this.apiAddress + '/login', user, this.generateHeaders());
   }
 
   register() {
