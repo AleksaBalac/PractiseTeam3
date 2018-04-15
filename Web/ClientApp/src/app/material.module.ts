@@ -5,10 +5,15 @@ import {
   MatMenuModule,
   MatToolbarModule,
   MatIconModule,
-  MatCardModule
+  MatCardModule,
+  MatCheckboxModule,
+  MatButtonToggleModule,
+  MatSidenavModule,
+  MatListModule
   } from '@angular/material';
 
-import { MatSidenavModule } from '@angular/material/sidenav';
+//import { MatSidenavModule } from '@angular/material/sidenav';
+//import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   imports: [
@@ -17,7 +22,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatCheckboxModule,
+    MatButtonToggleModule,
+    MatListModule
   ],
   exports: [
     MatButtonModule,
@@ -25,7 +33,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatCheckboxModule,
+    MatButtonToggleModule,
+    MatListModule
   ]
 })
 export class MaterialModule { }

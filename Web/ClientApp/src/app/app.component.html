@@ -1,4 +1,4 @@
-<div class='container-fluid'>
+<!--<div class='container-fluid'>
   <div class='row'>
     <div class='col-sm-3'>
       <app-nav-menu></app-nav-menu>
@@ -7,4 +7,25 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-</div>
+</div>-->
+
+<mat-sidenav-container>
+  <mat-sidenav opened #sidenav mode="side" (opened)="events.push('open!')" (closed)="events.push('close!')">
+
+    <mat-nav-list>
+      <a mat-list-item [routerLink]='["/"]'> Home </a>
+      <a mat-list-item [routerLink]='["/"]'> About </a>
+      <a mat-list-item [routerLink]='["/contact"]'> Contact </a>
+    </mat-nav-list>
+    
+  </mat-sidenav>
+  <mat-sidenav-content>
+
+    <mat-button-toggle (click)="sidenav.toggle()">
+      <i class="material-icons">menu</i>
+    </mat-button-toggle>
+
+    <router-outlet></router-outlet>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

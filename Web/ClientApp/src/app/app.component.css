@@ -1,6 +1,29 @@
+body {
+  padding: 5px;
+}
+
+mat-sidenav-container {
+  height: 100vh;
+}
+
+mat-sidenav {
+  width: 100px;
+  text-align: center;
+  -moz-align-content: center;
+  -o-align-content: center;
+  -webkit-align-content: center;
+  align-content: center;
+}
+
+mat-sidenav-content {
+  padding: 20px;
+}
+
 @media (max-width: 767px) {
   /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
   .body-content {
     padding-top: 50px;
   }
 }
+
+
