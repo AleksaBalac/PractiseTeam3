@@ -1,7 +1,7 @@
 <!--<div class='container-fluid'>
   <div class='row'>
     <div class='col-sm-3'>
-      <app-nav-menu></app-nav-menu>
+      
     </div>
     <div class='col-sm-9 body-content'>
       <router-outlet></router-outlet>
@@ -12,11 +12,7 @@
 <mat-sidenav-container>
   <mat-sidenav opened #sidenav mode="side" (opened)="events.push('open!')" (closed)="events.push('close!')">
 
-    <mat-nav-list>
-      <a mat-list-item [routerLink]='["/"]'> Home </a>
-      <a mat-list-item [routerLink]='["/"]'> About </a>
-      <a mat-list-item [routerLink]='["/contact"]'> Contact </a>
-    </mat-nav-list>
+    <app-nav-menu></app-nav-menu>
     
   </mat-sidenav>
   <mat-sidenav-content>
