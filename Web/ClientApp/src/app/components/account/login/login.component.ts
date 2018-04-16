@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from './../../../services/account.service';
+
 
 @Component({
   selector: 'app-login',
@@ -21,12 +23,14 @@ export class LoginComponent {
     Validators.required
   ]);
 
-  constructor(private accountService: AccountService) { }
+  constructor(
+    private accountService: AccountService,
+    private router: Router) { }
 
 
   onLogin() {
-    console.log(this.user);
-    this.accountService.login(this.user).subscribe(res => console.log(res));
+    this.accountService.login(this.user);
+    this.router.navigate(['/']);
   }
 
 }

@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { Request, XHRBackend, BrowserXhr, ResponseOptions, XSRFStrategy, Response } from '@angular/http';
 
 import { RouterModule } from '@angular/router';
 
@@ -15,6 +16,9 @@ import { CounterComponent } from './components/counter/counter.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { LoginComponent } from './components/account/login/login.component';
 import { RegisterComponent } from './components/account/register/register.component';
+
+import { AuthGuard } from './auth.guard';
+import { AuthenticateXHRBackend } from './authenticate-xhr.backend';
 
 import { AccountService } from './services/account.service';
 
@@ -36,14 +40,21 @@ import { AccountService } from './services/account.service';
     BrowserAnimationsModule,
     MaterialModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'contact', component: ContactComponent }
     ])
   ],
-  providers: [AccountService],
+  providers:
+    [
+      AccountService,
+      AuthGuard, {
+        provide: XHRBackend,
+        useClass: AuthenticateXHRBackend
+      }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

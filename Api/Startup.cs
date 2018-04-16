@@ -1,16 +1,21 @@
-﻿using Api.Exstensions;
+﻿using System.Text;
+using Api.Exstensions;
 using Entities;
 using Entities.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Api
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,9 +31,13 @@ namespace Api
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.ConfigureIdentity();
-            
+
             services.ConfigureCors();
+
+            services.ConfigureJwt(Configuration);
 
             services.ConfigureRepositoryWrapper();
 
