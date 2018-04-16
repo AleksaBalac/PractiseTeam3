@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Contracts;
+using Core;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 
@@ -16,17 +18,18 @@ namespace Api.Controllers
         }
 
         [HttpPost("api/login")]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel userViewModel)
+        public async Task<ResponseObject<Category>> Login([FromBody] LoginViewModel userViewModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await _repositoryWrapper.Account.Login(userViewModel);
-                    return Ok();
+                    var result = _repositoryWrapper.Category.GetCategories();
+                    //await _repositoryWrapper.Account.Login(userViewModel);
+                    return result;
                 }
 
-                return BadRequest("");
+                return null;
             }
             catch (Exception e)
             {
