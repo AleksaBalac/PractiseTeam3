@@ -18,15 +18,14 @@ namespace Api.Controllers
         }
 
         [HttpPost("api/login")]
-        public async Task<ResponseObject<Category>> Login([FromBody] LoginViewModel userViewModel)
+        public async Task<OkResult> Login([FromBody] LoginViewModel userViewModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = _repositoryWrapper.Category.GetCategories();
-                    //await _repositoryWrapper.Account.Login(userViewModel);
-                    return result;
+                    await _repositoryWrapper.Account.Login(userViewModel);
+                    return Ok();
                 }
 
                 return null;

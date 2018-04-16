@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels", "..\Data\ViewM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\Data\Core\Core\Core.csproj", "{2311F093-FFDF-478F-B5EA-09318A5138EC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{BDFC995B-89EF-481A-99C1-25502F0782B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9920FDA7-BC12-4482-BC78-982AB30746F9} = {BDFC995B-89EF-481A-99C1-25502F0782B1}
+		{90D79F38-ACE2-429D-A594-75DBD178000D} = {BDFC995B-89EF-481A-99C1-25502F0782B1}
+		{B4A0DDD8-AD7B-44D9-92B2-A24905DA52ED} = {BDFC995B-89EF-481A-99C1-25502F0782B1}
+		{EB7E8901-E35E-4BF5-98F4-7464DEC0AD27} = {BDFC995B-89EF-481A-99C1-25502F0782B1}
+		{2311F093-FFDF-478F-B5EA-09318A5138EC} = {BDFC995B-89EF-481A-99C1-25502F0782B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8EC2411-E1CF-4169-8789-0A9D278F83FF}
