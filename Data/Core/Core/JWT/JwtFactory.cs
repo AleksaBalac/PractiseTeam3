@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
+using Core.JWT.Helpers;
 using Microsoft.Extensions.Options;
 
-namespace Api.JWT
+namespace Core.JWT
 {
     public class JwtFactory : IJwtFactory
     {
@@ -27,8 +25,8 @@ namespace Api.JWT
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
-                 identity.FindFirst(Helpers.Constants.Strings.JwtClaimIdentifiers.Rol),
-                 identity.FindFirst(Helpers.Constants.Strings.JwtClaimIdentifiers.Id)
+                 identity.FindFirst(Constants.Strings.JwtClaimIdentifiers.Rol),
+                 identity.FindFirst(Constants.Strings.JwtClaimIdentifiers.Id)
              };
 
             // Create the JWT security token and encode it.
@@ -49,8 +47,8 @@ namespace Api.JWT
         {
             return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {
-                new Claim(Helpers.Constants.Strings.JwtClaimIdentifiers.Id, id),
-                new Claim(Helpers.Constants.Strings.JwtClaimIdentifiers.Rol, Helpers.Constants.Strings.JwtClaims.ApiAccess)
+                new Claim(Constants.Strings.JwtClaimIdentifiers.Id, id),
+                new Claim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess)
             });
         }
 

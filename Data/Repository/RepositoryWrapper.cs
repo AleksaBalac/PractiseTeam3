@@ -1,5 +1,9 @@
 ﻿using Contracts;
+using Core.JWT;
 using Entities;
+using Entities.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace Repository
 {
@@ -8,10 +12,10 @@ namespace Repository
         public ICategoryRepository Category { get; set; }
         public IAccountRepository Account { get; set; }
 
-        public RepositoryWrapper(AppDbContext repositoryContext)
+        public RepositoryWrapper(AppDbContext repositoryContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
         {
             this.Category = new CategoryRepository(repositoryContext);
-            this.Account = new AccountRepository(repositoryContext);
+            this.Account = new AccountRepository(repositoryContext, userManager, jwtFactory, jwtOptions);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Api.JWT.Helpers
+namespace Core.JWT.Helpers
     { 
         public static class Errors
         {

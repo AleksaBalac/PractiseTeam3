@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Api.JWT.Helpers
+namespace Core.JWT.Helpers
 {
     public class Tokens
     {
