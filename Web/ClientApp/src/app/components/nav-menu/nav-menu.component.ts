@@ -20,8 +20,6 @@ export class NavMenuComponent implements OnInit {
     
   }
 
-  onLogOut() {
-    this.user.logout();
-  }
+ 
 
 }

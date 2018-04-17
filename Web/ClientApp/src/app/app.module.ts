@@ -11,7 +11,7 @@ import { MaterialModule } from './material.module';
 
 import { AppComponent } from './components/app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { HomeComponent } from './components/home/home.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CounterComponent } from './components/counter/counter.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { LoginComponent } from './components/account/login/login.component';
@@ -26,7 +26,7 @@ import { AccountService } from './services/account.service';
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
+    DashboardComponent,
     CounterComponent,
     ContactComponent,
     LoginComponent,
@@ -40,7 +40,7 @@ import { AccountService } from './services/account.service';
     BrowserAnimationsModule,
     MaterialModule,
     RouterModule.forRoot([
-      { path: 'home', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'dashboard', component: DashboardComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'counter', component: CounterComponent },

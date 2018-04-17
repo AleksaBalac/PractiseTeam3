@@ -10,6 +10,7 @@ using Core.JWT.Helpers;
 using Entities;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -69,11 +70,13 @@ namespace Repository
             var id = tokenS?.Claims?.FirstOrDefault(a => a.Type == "id")?.Value;
 
             var user = AppDbContext.Users.FirstOrDefault(c => c.Id == id);
+            var companyAccount = AppDbContext.CompanyAccount.Include(a => a.Company)?.FirstOrDefault(a => a.UserId == user.Id);
             var roles = await _userManager.GetRolesAsync(user);
 
             JObject jUser = new JObject()
             {
                 {"FullName", user?.FullName},
+                {"CompanyName", companyAccount?.Company.Name},
                 {"UserRole", roles.FirstOrDefault()}
             };
             
@@ -100,13 +103,18 @@ namespace Repository
                 Name = registrationViewModel.Name,
                 CompanyId = Guid.NewGuid().ToString()
             };
-
-            //create company account
+            
+            var companyAccount = new CompanyAccount
+            {
+                CompanyId = company.CompanyId,
+                UserId = user.Id
+            };
 
             var result = await _userManager.CreateAsync(user, registrationViewModel.Password);
             var role = _userManager.AddToRoleAsync(user, "CompanyAdmin");
 
             await AppDbContext.Companies.AddAsync(company);
+            await AppDbContext.CompanyAccount.AddAsync(companyAccount);
             await AppDbContext.SaveChangesAsync();
 
             response.Data = null;

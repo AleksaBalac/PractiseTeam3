@@ -12,19 +12,14 @@ export class AccountService extends ServiceHelper {
 
   private userDetailsHolder = new BehaviorSubject<any>({});//TODO change this to model or interface
   userDetails = this.userDetailsHolder.asObservable();
-
-  // Observable navItem source
-  private authNavStatusSource = new BehaviorSubject<boolean>(false);
-  // Observable navItem stream
-  authNavStatus$ = this.authNavStatusSource.asObservable();
-
+  
   constructor(
     private http: HttpClient,
     private router: Router,
     public snackBar: MatSnackBar) {
+
     super();
     this.loggedIn = !!localStorage.getItem('auth_token');
-    this.authNavStatusSource.next(this.loggedIn);
     this.getUserDetails();
   }
 
@@ -37,12 +32,13 @@ export class AccountService extends ServiceHelper {
   login(user: any) {
     return this.http.post(this.apiAddress + '/login', user, this.generateHeaders()).subscribe((res: any) => {
       localStorage.setItem('auth_token', res.data.auth_token);
+      console.log('log in before getUserDetails');
       this.getUserDetails();
+      console.log('log in after getUserDetails');
       this.loggedIn = true;
-      this.authNavStatusSource.next(true);
       
       this.openSnackBar('User logged in successfully!','Close');
-      return this.router.navigate(['/home']);
+      return this.router.navigate(['/dashboard']);
     });
   }
 
@@ -53,7 +49,6 @@ export class AccountService extends ServiceHelper {
   logout() {
     localStorage.removeItem('auth_token');
     this.loggedIn = false;
-    this.authNavStatusSource.next(false);
     this.userDetailsHolder.next(null);
     this.openSnackBar('User logged out successfully!', 'Close');
     this.router.navigate(['/login']);
@@ -65,6 +60,7 @@ export class AccountService extends ServiceHelper {
     }
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
+    console.log('im going to take user details data on server');
     return this.http.get(this.apiAddress + "/user/details", this.generateHeadersWithToken()).subscribe((res: any) => this.userDetailsHolder.next(res.data));
   }
 

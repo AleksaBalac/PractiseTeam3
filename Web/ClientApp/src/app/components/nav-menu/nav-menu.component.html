@@ -1,21 +1,14 @@
 <mat-nav-list>
-
- 
-  
-  <div *ngIf="userDetails" class="user-details">
-    <i class="material-icons">person</i> <span>{{userDetails.FullName}}</span>
-  </div>
-
-
   <div *ngIf="user.isLoggedIn()">
-    <a mat-list-item [routerLink]='["/home"]'> Home </a>
-    <a mat-list-item [routerLink]='["/home"]'> About </a>
-    <a mat-list-item [routerLink]='["/contact"]'> Contact </a>
+    <a mat-list-item [routerLink]='["/dashboard"]'> Dashboard </a>
+    
+    
     <mat-divider></mat-divider>
-    <a mat-list-item (click)="onLogOut()"> Logout </a>
   </div>
+
   <div *ngIf="!user.isLoggedIn()">
-    <a mat-list-item [routerLink]='["/login"]'> Login </a>
-    <a mat-list-item [routerLink]='["/register"]'> Register </a>
+    <a mat-list-item [routerLink]='["/dashboard"]'> About </a>
+    <a mat-list-item [routerLink]='["/contact"]'> Contact </a>
   </div>
+ 
 </mat-nav-list>

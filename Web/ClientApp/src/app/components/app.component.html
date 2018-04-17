@@ -1,19 +1,30 @@
-<!--<div class='container-fluid'>
-  <div class='row'>
-    <div class='col-sm-3'>
-      
+<mat-toolbar color="">
+  
+  <mat-toolbar-row>
+    <div *ngIf="user.isLoggedIn()">
+      <span><mat-icon class="example-icon">person</mat-icon></span>
+      <span *ngIf="userDetails"> {{ userDetails.CompanyName }}</span>
+      <span *ngIf="!userDetails"> Refresh </span>
     </div>
-    <div class='col-sm-9 body-content'>
-      <router-outlet></router-outlet>
+
+    <span class="example-spacer"></span>
+
+    <a *ngIf="user.isLoggedIn()" mat-button (click)="onLogOut()"> Logout </a>
+    <div class="pull-right" *ngIf="!user.isLoggedIn()">
+      <a mat-button [routerLink]='["/login"]'> Login </a>
+      <a mat-button [routerLink]='["/register"]'> Register </a>
     </div>
-  </div>
-</div>-->
+
+  </mat-toolbar-row>
+  
+</mat-toolbar>
+
 
 <mat-sidenav-container>
   <mat-sidenav opened #sidenav mode="side" (opened)="events.push('open!')" (closed)="events.push('close!')">
 
     <app-nav-menu></app-nav-menu>
-    
+
   </mat-sidenav>
   <mat-sidenav-content>
 

@@ -12,7 +12,9 @@ namespace Entities
         }
         
         public DbSet<Company> Companies { get; set; }
+        public DbSet<CompanyAccount> CompanyAccount { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }
     }
 }
+

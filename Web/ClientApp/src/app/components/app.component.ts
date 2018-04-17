@@ -8,13 +8,15 @@ import { AccountService } from './../services/account.service';
 })
 export class AppComponent implements OnInit {
   events = [];
- 
+  userDetails:any;
+
   constructor(private user: AccountService) { }
 
   ngOnInit() {
-    
+    this.user.userDetails.subscribe((res: any) => this.userDetails = res);
   }
 
-  
-
+  onLogOut() {
+    this.user.logout();
+  }
 }
