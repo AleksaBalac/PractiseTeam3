@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Contracts;
 using Core;
@@ -13,6 +12,7 @@ using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ViewModels;
 
 namespace Repository
@@ -22,8 +22,7 @@ namespace Repository
         private readonly UserManager<User> _userManager;
         private readonly IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
-
-
+        
         public AccountRepository(AppDbContext appDbContext) : base(appDbContext)
         {
         }
@@ -52,10 +51,68 @@ namespace Repository
 
             var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, loginViewModel.Email, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
-            result.Data = jwt;
+            var token = JsonConvert.DeserializeObject(jwt);
+
+            result.Data = token;
             result.Message = "User is successfully logged in!";
-            
+
             return result;
+        }
+
+        public async Task<ResponseObject<object>> GetUserDetails(string token)
+        {
+            ResponseObject<object> result = new ResponseObject<object>();
+
+            var handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken tokenS = handler.ReadToken(token) as JwtSecurityToken;
+
+            var id = tokenS?.Claims?.FirstOrDefault(a => a.Type == "id")?.Value;
+
+            var user = AppDbContext.Users.FirstOrDefault(c => c.Id == id);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            JObject jUser = new JObject()
+            {
+                {"FullName", user?.FullName},
+                {"UserRole", roles.FirstOrDefault()}
+            };
+            
+            result.Data = jUser;
+
+            return result;
+
+        }
+
+        public async Task<ResponseObject<object>> Register(RegistrationViewModel registrationViewModel)
+        {
+            var response = new ResponseObject<object>();
+
+            var user = new User
+            {
+                FirstName = registrationViewModel.FirstName,
+                LastName = registrationViewModel.LastName,
+                Email = registrationViewModel.Email,
+                UserName = registrationViewModel.Email
+            };
+
+            var company = new Company
+            {
+                Name = registrationViewModel.Name,
+                CompanyId = Guid.NewGuid().ToString()
+            };
+
+            //create company account
+
+            var result = await _userManager.CreateAsync(user, registrationViewModel.Password);
+            var role = _userManager.AddToRoleAsync(user, "CompanyAdmin");
+
+            await AppDbContext.Companies.AddAsync(company);
+            await AppDbContext.SaveChangesAsync();
+
+            response.Data = null;
+            response.Message = "Successfully registered! Check your email for activation!";
+
+            return response;
         }
 
         #region private methods

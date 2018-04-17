@@ -30,7 +30,6 @@ export class LoginComponent {
 
   onLogin() {
     this.accountService.login(this.user);
-    this.router.navigate(['/']);
   }
 
 }

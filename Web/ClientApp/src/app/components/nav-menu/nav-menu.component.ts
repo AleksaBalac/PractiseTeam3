@@ -7,12 +7,21 @@ import { AccountService } from './../../services/account.service';
   styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent implements OnInit {
-  
+  userDetails: any;
 
-  constructor(private user: AccountService) {  }
+
+  constructor(private user: AccountService) {
+    
+  }
 
   ngOnInit(): void {
-    this.user.getHomeDetails().subscribe(res => console.log(res));
+    //this.user.getUserDetails().subscribe((res: any) => this.userDetails = res.data);
+    this.user.userDetails.subscribe((res: any) => this.userDetails = res);
+    
+  }
+
+  onLogOut() {
+    this.user.logout();
   }
 
 }

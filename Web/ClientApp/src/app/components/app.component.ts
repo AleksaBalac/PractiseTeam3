@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from './../services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -7,11 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   events = [];
-
-  constructor() {  }
+ 
+  constructor(private user: AccountService) { }
 
   ngOnInit() {
     
   }
+
+  
 
 }

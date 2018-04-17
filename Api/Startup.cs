@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Api.Exstensions;
+﻿using Api.Exstensions;
 using Entities;
 using Entities.Models;
 using Microsoft.AspNetCore.Builder;
@@ -8,8 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Api
 {

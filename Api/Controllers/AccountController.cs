@@ -1,21 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Contracts;
 using Core;
-using Core.JWT;
-using Core.JWT.Helpers;
-using Entities;
-using Entities.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using ViewModels;
 
 namespace Api.Controllers
@@ -29,8 +16,7 @@ namespace Api.Controllers
         {
             _repositoryWrapper = repositoryWrapper;
         }
-
-        // POST api/auth/login
+        
         [HttpPost("login")]
         public Task<ResponseObject<object>> Login([FromBody]LoginViewModel loginViewModel)
         {
@@ -47,38 +33,47 @@ namespace Api.Controllers
             }
             catch (Exception e)
             {
+                //TODO add log
                 Console.WriteLine(e);
                 throw;
-            }            
+            }
         }
 
-        //[HttpGet("user")]
-        //public IActionResult Home()
-        //{
-        //    // retrieve the user info
-        //    //HttpContext.User
-        //    var handler = new JwtSecurityTokenHandler();
+        [HttpGet("user/details")]
+        public Task<ResponseObject<object>> Details()
+        {
+            try
+            {
+                var token = Request.Headers["Authorization"];
 
-        //    var someData = Request.Headers["Authorization"].ToArray();
+                if (token == "null") return null;
 
-        //    JwtSecurityToken tokenS = handler.ReadToken(someData[0]) as JwtSecurityToken;
+                var result = _repositoryWrapper.Account.GetUserDetails(token);
 
-        //    var id = tokenS.Claims.FirstOrDefault(a=>a.Type == "id").Value;
+                return result;
+            }
+            catch (Exception e)
+            {
+                //TODO add log
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
-        //    //var userId = _caller.Claims.Single(c => c.Type == tokenS.Id);
-        //    var customer = _appDbContext.Users.FirstOrDefault(c => c.Id == id);
-
-            
-        //        return new OkObjectResult(new
-        //        {
-        //            Message = "This is secure API and user data!",
-        //            customer.FirstName,
-        //            customer.LastName
-        //        });
-        //}
-
-        
-
-        
+        [HttpPost("register")]
+        public Task<ResponseObject<object>> Register([FromBody] RegistrationViewModel registrationViewModel)
+        {
+            try
+            {
+                var result = _repositoryWrapper.Account.Register(registrationViewModel);
+                return result;
+            }
+            catch (Exception e)
+            {
+                //TODO add log
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

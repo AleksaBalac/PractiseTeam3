@@ -10,7 +10,7 @@ namespace Entities.Models
         public string LastName { get; set; }
 
         [IgnoreProperty]
-        public string FullName => $"{FirstName} + {LastName}";
+        public string FullName => $"{FirstName} {LastName}";
         public string Phone { get; set; }
     }
 }
