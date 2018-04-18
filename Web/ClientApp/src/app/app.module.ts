@@ -14,6 +14,9 @@ import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CounterComponent } from './components/counter/counter.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { UsersComponent } from './components/users/users.component';
+import { UserModalComponent } from './components/users/modal/user.modal.component';
+
 import { LoginComponent } from './components/account/login/login.component';
 import { RegisterComponent } from './components/account/register/register.component';
 
@@ -21,6 +24,8 @@ import { AuthGuard } from './auth.guard';
 import { AuthenticateXHRBackend } from './authenticate-xhr.backend';
 
 import { AccountService } from './services/account.service';
+import { UsersService } from './services/users.service';
+
 
 @NgModule({
   declarations: [
@@ -30,7 +35,9 @@ import { AccountService } from './services/account.service';
     CounterComponent,
     ContactComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    UsersComponent,
+    UserModalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -41,15 +48,20 @@ import { AccountService } from './services/account.service';
     MaterialModule,
     RouterModule.forRoot([
       { path: 'dashboard', component: DashboardComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'contact', component: ContactComponent }
     ])
   ],
+  entryComponents: [
+    UserModalComponent
+  ],
   providers:
     [
       AccountService,
+      UsersService,
       AuthGuard, {
         provide: XHRBackend,
         useClass: AuthenticateXHRBackend

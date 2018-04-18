@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
 using Core;
@@ -8,69 +10,62 @@ using ViewModels;
 namespace Api.Controllers
 {
     [Route("api/")]
-    public class AccountController : BaseController
+    public class UsersController : BaseController
     {
         private readonly IRepositoryWrapper _repositoryWrapper;
 
-        public AccountController(IRepositoryWrapper repositoryWrapper)
+        public UsersController(IRepositoryWrapper repositoryWrapper)
         {
             _repositoryWrapper = repositoryWrapper;
         }
-        
-        [HttpPost("login")]
-        public Task<ResponseObject<object>> Login([FromBody]LoginViewModel loginViewModel)
+
+        [HttpGet("users/list")]
+        public ResponseObject<object> GetUsersList()
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return null;
-                }
+                string userId = GetUserIdFromToken();
 
-                //EmailService.SendEmail(null,new EventArgs());
-
-                var result = _repositoryWrapper.Account.Login(loginViewModel);
+                var result = _repositoryWrapper.Users.GetUsersList(userId);
 
                 return result;
             }
             catch (Exception e)
             {
-                //TODO add log
                 Console.WriteLine(e);
                 throw;
             }
         }
 
-        [HttpGet("user/details")]
-        public Task<ResponseObject<object>> Details()
+        [HttpPost("users/add")]
+        public Task<ResponseObject<object>> AddNewUser([FromBody] UsersViewModel userViewModel)
         {
             try
             {
                 string userId = GetUserIdFromToken();
                 
-                var result = _repositoryWrapper.Account.GetUserDetails(userId);
+                var result = _repositoryWrapper.Users.SaveNewUserAsync(userId, userViewModel);
 
                 return result;
             }
             catch (Exception e)
             {
-                //TODO add log
                 Console.WriteLine(e);
                 throw;
             }
         }
 
-        [HttpPost("register")]
-        public Task<ResponseObject<object>> Register([FromBody] RegistrationViewModel registrationViewModel)
+        [HttpGet("users/list/roles")]
+        public ResponseObject<object> GetListOfRoles()
         {
             try
             {
-                var result = _repositoryWrapper.Account.Register(registrationViewModel);
+                var result = _repositoryWrapper.Users.GetListOfRoles();
+
                 return result;
             }
             catch (Exception e)
             {
-                //TODO add log
                 Console.WriteLine(e);
                 throw;
             }

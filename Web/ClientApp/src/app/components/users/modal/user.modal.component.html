@@ -1,0 +1,46 @@
+<form class="example-form">
+  <div class="row">
+    <div class="col-md-6">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="First name" [(ngModel)]="user.firstName" name="firstName" [formControl]="firstNameFormControl">
+        <mat-error *ngIf="firstNameFormControl.hasError('required')">
+          First name is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Last name" [(ngModel)]="user.lastName" name="lastName" [formControl]="lastNameFormControl">
+        <mat-error *ngIf="lastNameFormControl.hasError('required')">
+          Last name is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Email" [(ngModel)]="user.email" name="email" [formControl]="emailFormControl">
+        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6">
+      <mat-form-field>
+        <mat-select placeholder="User role" name="role" [(ngModel)]="user.role">
+          <mat-option *ngFor="let role of data" [value]="role.name">
+            {{ role.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onSave()" cdkFocusInitial>Save</button> <!--[mat-dialog-close]="user"-->
+    <button mat-button (click)="onNoClick()">Cancel</button>
+  </div>
+</form>

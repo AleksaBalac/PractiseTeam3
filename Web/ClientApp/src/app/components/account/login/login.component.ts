@@ -14,6 +14,7 @@ import { AccountService } from './../../../services/account.service';
 export class LoginComponent {
   user: any = {};
 
+
   emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email

@@ -11,7 +11,12 @@ import {
   MatSidenavModule,
   MatListModule,
   MatInputModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatDialogModule,
+  MatOptionModule,
+  MatSelectModule
   } from '@angular/material';
 
 
@@ -27,7 +32,12 @@ import {
     MatButtonToggleModule,
     MatListModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   exports: [
     MatButtonModule,
@@ -40,7 +50,12 @@ import {
     MatButtonToggleModule,
     MatListModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatOptionModule,
+    MatSelectModule
   ]
 })
 export class MaterialModule { }

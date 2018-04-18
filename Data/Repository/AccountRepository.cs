@@ -60,16 +60,16 @@ namespace Repository
             return result;
         }
 
-        public async Task<ResponseObject<object>> GetUserDetails(string token)
+        public async Task<ResponseObject<object>> GetUserDetails(string userId)
         {
             ResponseObject<object> result = new ResponseObject<object>();
 
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken tokenS = handler.ReadToken(token) as JwtSecurityToken;
+            //var handler = new JwtSecurityTokenHandler();
+            //JwtSecurityToken tokenS = handler.ReadToken(token) as JwtSecurityToken;
 
-            var id = tokenS?.Claims?.FirstOrDefault(a => a.Type == "id")?.Value;
+            //var id = tokenS?.Claims?.FirstOrDefault(a => a.Type == "id")?.Value;
 
-            var user = AppDbContext.Users.FirstOrDefault(c => c.Id == id);
+            var user = AppDbContext.Users.FirstOrDefault(c => c.Id == userId);
             var companyAccount = AppDbContext.CompanyAccount.Include(a => a.Company)?.FirstOrDefault(a => a.UserId == user.Id);
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -95,7 +95,8 @@ namespace Repository
                 FirstName = registrationViewModel.FirstName,
                 LastName = registrationViewModel.LastName,
                 Email = registrationViewModel.Email,
-                UserName = registrationViewModel.Email
+                UserName = registrationViewModel.Email,
+                EmailConfirmed = true
             };
 
             var company = new Company
@@ -106,11 +107,14 @@ namespace Repository
             
             var companyAccount = new CompanyAccount
             {
+                CompanyAccountId = Guid.NewGuid().ToString(),
                 CompanyId = company.CompanyId,
                 UserId = user.Id
             };
 
             var result = await _userManager.CreateAsync(user, registrationViewModel.Password);
+            if (result.Succeeded) AccountConfirm(user);
+
             var role = _userManager.AddToRoleAsync(user, "CompanyAdmin");
 
             await AppDbContext.Companies.AddAsync(company);
@@ -121,6 +125,28 @@ namespace Repository
             response.Message = "Successfully registered! Check your email for activation!";
 
             return response;
+        }
+
+        private async void AccountConfirm(User user)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            AppDomain root = AppDomain.CurrentDomain;
+
+            var callbackUrl = $"{root}/api/account/userId=${user.Id}&code=${code}";
+
+            //var callbackUrl = Url.Action(
+            //    "ConfirmEmail", "Account",
+            //    new { userId = user.Id, code = code },
+            //    protocol: Request.Url.Scheme);
+
+            
+
+            //await _userManager.SendEmailAsync(user.Id,
+            //    "Confirm your account",
+            //    "Please confirm your account by clicking this link: <a href=\""
+            //    + callbackUrl + "\">link</a>");
+            // ViewBag.Link = callbackUrl;   // Used only for initial demo.
         }
 
         #region private methods

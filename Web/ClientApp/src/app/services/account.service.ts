@@ -72,17 +72,5 @@ export class AccountService extends ServiceHelper {
       });
   }
 
-  private generateHeadersWithToken() {
-    let authToken = localStorage.getItem('auth_token');
-
-    return {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `${authToken}` })
-    }
-  }
-
-  private generateHeaders() {
-    return {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
-  }
+  
 }
