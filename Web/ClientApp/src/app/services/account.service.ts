@@ -17,24 +17,17 @@ export class AccountService extends ServiceHelper {
     private http: HttpClient,
     private router: Router,
     public snackBar: MatSnackBar) {
+    super(snackBar);
 
-    super();
+
     this.loggedIn = !!localStorage.getItem('auth_token');
     this.getUserDetails();
   }
-
-  openSnackBar(message: string, action: string) {
-    this.snackBar.open(message, action, {
-      duration: 4000,
-    });
-  }
-
+  
   login(user: any) {
     return this.http.post(this.apiAddress + '/login', user, this.generateHeaders()).subscribe((res: any) => {
       localStorage.setItem('auth_token', res.data.auth_token);
-      console.log('log in before getUserDetails');
       this.getUserDetails();
-      console.log('log in after getUserDetails');
       this.loggedIn = true;
       
       this.openSnackBar('User logged in successfully!','Close');
@@ -60,7 +53,6 @@ export class AccountService extends ServiceHelper {
     }
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    console.log('im going to take user details data on server');
     return this.http.get(this.apiAddress + "/user/details", this.generateHeadersWithToken()).subscribe((res: any) => this.userDetailsHolder.next(res.data));
   }
 

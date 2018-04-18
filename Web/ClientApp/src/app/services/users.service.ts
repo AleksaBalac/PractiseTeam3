@@ -10,7 +10,7 @@ export class UsersService extends ServiceHelper {
 
   constructor(
     private http: HttpClient, private router: Router, public snackBar: MatSnackBar) {
-    super();
+    super(snackBar);
   }
 
   getUsers() {
@@ -23,6 +23,10 @@ export class UsersService extends ServiceHelper {
 
   saveUser(user: any) {
     return this.http.post(this.apiAddress + '/users/add', user, this.generateHeadersWithToken());
+  }
+
+  updateUser(user: any) {
+    return this.http.put(this.apiAddress + '/users/update', user, this.generateHeaders());
   }
 
   deleteUser(id: string) { }

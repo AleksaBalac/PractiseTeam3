@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Contracts;
 using Core;
@@ -29,11 +28,11 @@ namespace Repository
             {
                 //var users = AppDbContext.CompanyAccount.Where(a => a.UserId == userId)?.Select(a => a.User).ToList();
 
-                var company = AppDbContext.CompanyAccount.Include(a=>a.Company).FirstOrDefault(a => a.UserId == userId)?.Company;
+                var company = AppDbContext.CompanyAccount.Include(a => a.Company).FirstOrDefault(a => a.UserId == userId)?.Company;
 
                 var users = AppDbContext.CompanyAccount.Include(a => a.User)
                     .Where(a => a.CompanyId == company.CompanyId).Select(a => a.User).ToList();
-                
+
                 //var userRole = AppDbContext.UserRoles.FirstOrDefault(a => a.UserId == userId);
                 //var role = AppDbContext.Roles.FirstOrDefault(a => a.Id == userRole.RoleId)?.Name;
 
@@ -109,8 +108,9 @@ namespace Repository
 
                 await AppDbContext.CompanyAccount.AddAsync(companyAccount);
                 await AppDbContext.SaveChangesAsync();
-                
+
                 response.Success = true;
+                response.Message = "User is added successfully!";
                 response.Data = null;
                 return response;
             }
@@ -128,6 +128,48 @@ namespace Repository
             try
             {
                 response.Data = AppDbContext.Roles.ToList();
+                return response;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task<ResponseObject<object>> UpdateUserAsync(UsersViewModel userViewModel)
+        {
+            var response = new ResponseObject<object>();
+            try
+            {
+                var user = _userManager.Users.FirstOrDefault(a => a.Id == userViewModel.Id);
+                if (user == null)
+                {
+                    response.Message = "Can't find user";
+                    response.Success = false;
+                    return response;
+                }
+
+                user.FirstName = userViewModel.FirstName;
+                user.LastName = userViewModel.LastName;
+                user.Email = userViewModel.Email;
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    bool isInRole = await _userManager.IsInRoleAsync(user, userViewModel.Role);
+                    if (isInRole)
+                    {
+                        //TODO discuss what to do if user have another roles
+                        var removed = await _userManager.RemoveFromRolesAsync(user, new List<string> { "SuperAdmin", "CompanyAdmin" });
+                        var addToNewRole = await _userManager.AddToRoleAsync(user, userViewModel.Role);
+                    }
+                }
+
+                response.Data = user;
+                response.Success = true;
+                response.Message = "User successfully updated!";
                 return response;
             }
             catch (Exception e)

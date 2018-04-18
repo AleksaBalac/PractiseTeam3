@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Core;
 using ViewModels;
 
@@ -13,5 +9,6 @@ namespace Contracts
         ResponseObject<object> GetUsersList(string token);
         Task<ResponseObject<object>> SaveNewUserAsync(string userId, UsersViewModel usersViewModel);
         ResponseObject<object> GetListOfRoles();
+        Task<ResponseObject<object>> UpdateUserAsync(UsersViewModel userViewModel);
     }
 }

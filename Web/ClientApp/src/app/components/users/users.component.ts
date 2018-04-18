@@ -25,10 +25,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.userService.getUsers().subscribe((res: any) => {
       this.user = res.data;
       this.dataSource.data = this.user;
-    })
+    });
 
     this.userService.getRoles().subscribe((res: any) => {
-      this.roles = res.data
+      this.roles = res.data;
     });
   }
 
@@ -36,20 +36,33 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  openAddUserModal() {
+  openUserModal(user:User) {
     let dialogRef = this.dialog.open(UserModalComponent, {
       width: '60%',
-      data: this.roles
+      data: { 'role': this.roles, 'user': user }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined) {
-        console.log('The dialog was closed', result);
+      if (result != undefined && user == null) {
         this.user.unshift(result);
         this.dataSource.data = this.user;
       }
+      else if (user != null && result != undefined) {
+        user = result;
+      }
     });
   }
+  
+  //onEditUser(user: string) {
+  //  let user = this.user.find(a=>a.id===userId);
+
+  //  this.openUserModal(user);
+  //}
+
+  onDeleteUser(userId: string) {
+    console.log(userId);
+  }
+
 }
 
 

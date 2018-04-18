@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 a:focus, a:hover {
  text-decoration: none !important;
@@ -18,4 +18,9 @@ a:focus, a:hover {
 
 .mat-column-select {
   overflow: initial;
+}
+
+mat-spinner {
+  position: absolute;
+  left: 40%;
 }

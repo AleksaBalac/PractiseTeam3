@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
 using Core;
@@ -45,6 +43,22 @@ namespace Api.Controllers
                 string userId = GetUserIdFromToken();
                 
                 var result = _repositoryWrapper.Users.SaveNewUserAsync(userId, userViewModel);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        [HttpPut("users/update")]
+        public Task<ResponseObject<object>> UpdateUser([FromBody] UsersViewModel userViewModel)
+        {
+            try
+            {
+                var result = _repositoryWrapper.Users.UpdateUserAsync(userViewModel);
 
                 return result;
             }
