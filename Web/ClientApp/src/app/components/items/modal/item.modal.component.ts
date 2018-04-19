@@ -23,7 +23,7 @@ export class ItemModalComponent extends ServiceHelper implements OnInit {
       name: ''
     }
   };
-
+  
   mode: string;
 
   valueFormControl = new FormControl('', [
@@ -69,7 +69,7 @@ export class ItemModalComponent extends ServiceHelper implements OnInit {
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close('undo');
   }
 
 }

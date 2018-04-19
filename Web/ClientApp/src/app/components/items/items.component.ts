@@ -37,20 +37,27 @@ export class ItemsComponent implements OnInit {
   }
 
   openItemModal(item: Item) {
+    const original = this.dataSource.data;
     let dialogRef = this.dialog.open(ItemModalComponent, {
       width: '30%',
       data: { 'categories': this.categories, 'item': item }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined) {
+      if (result != undefined && result != 'undo') {
         if (item != null && item.category.categoryId != result.category.categoryId) {
           this.items.splice(this.items.indexOf(item), 1);
           this.dataSource.data = this.items;
-        } else {
+        }
+        else if (item.inventoryItemId == result.inventoryItemId) {
+          this.dataSource.data = this.items;
+        }
+        else {
           this.items.unshift(result);
           this.dataSource.data = this.items;
         }
+      } else {
+        this.dataSource.data = original;
       }
 
     });
@@ -74,7 +81,6 @@ export class ItemsComponent implements OnInit {
   }
 
   onDeleteItem(item: Item) {
-    console.log(item);
     this.itemService.deleteItem(item.inventoryItemId).subscribe((res: any) => {
       if (res != undefined) {
         this.items.splice(this.items.indexOf(item), 1);

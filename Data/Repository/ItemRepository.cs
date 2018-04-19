@@ -26,14 +26,16 @@ namespace Repository
 
             try
             {
+                var categoryId = AppDbContext.Categories.FirstOrDefault(a => a.Name.Contains(itemViewModel.Category.Name))?.CategoryId;
+
                 InventoryItem item = new InventoryItem
                 {
                     InventoryItemId = Guid.NewGuid().ToString(),
                     BarCode = Guid.NewGuid().ToString(),
-                    CategoryId = AppDbContext.Categories.FirstOrDefault(a=>a.Name.Contains(itemViewModel.Category.Name))?.CategoryId,
+                    CategoryId = categoryId,
                     Description = itemViewModel.Description,
                     Value = itemViewModel.Value,
-                    OrderNumber = AppDbContext.InventoryItems.Count() + 1
+                    OrderNumber = AppDbContext.InventoryItems.Count(a => a.CategoryId == categoryId) + 1
                 };
 
                 await AppDbContext.InventoryItems.AddAsync(item);
