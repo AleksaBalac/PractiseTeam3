@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
+    [Route("api/")]
     public class CategoryController : BaseController
     {
         private readonly IRepositoryWrapper _repositoryWrapper;

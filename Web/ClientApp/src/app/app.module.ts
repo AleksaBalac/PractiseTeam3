@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { Request, XHRBackend, BrowserXhr, ResponseOptions, XSRFStrategy, Response } from '@angular/http';
+import { XHRBackend } from '@angular/http';
 
 import { RouterModule } from '@angular/router';
 
@@ -30,6 +30,7 @@ import { AuthenticateXHRBackend } from './authenticate-xhr.backend';
 import { AccountService } from './services/account.service';
 import { UsersService } from './services/users.service';
 import { ItemService } from './services/item.service';
+import { CategoryService } from './services/category.service';
 
 
 @NgModule({
@@ -72,6 +73,7 @@ import { ItemService } from './services/item.service';
       AccountService,
       UsersService,
       ItemService,
+      CategoryService,
       AuthGuard, {
         provide: XHRBackend,
         useClass: AuthenticateXHRBackend

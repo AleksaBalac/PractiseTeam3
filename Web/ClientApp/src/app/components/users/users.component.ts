@@ -14,6 +14,7 @@ import { User } from '../../interface/user.interface';
 export class UsersComponent implements OnInit, AfterViewInit {
   users: User[] = [];
   roles: any;
+  showSpinner:boolean;
 
   displayedColumns = ['firstName', 'lastName', 'email', 'role', 'action'];
   dataSource = new MatTableDataSource<User>(this.users);
@@ -22,9 +23,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
   constructor(private userService: UsersService, public dialog: MatDialog, public snackBar: MatSnackBar) { }
 
   ngOnInit() {
+    this.showSpinner = true;
+
     this.userService.getUsers().subscribe((res: any) => {
       this.users = res.data;
       this.dataSource.data = this.users;
+      this.showSpinner = false;
     });
 
     this.userService.getRoles().subscribe((res: any) => {

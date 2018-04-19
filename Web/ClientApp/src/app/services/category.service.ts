@@ -5,19 +5,20 @@ import { MatSnackBar } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class ItemService extends ServiceHelper {
+export class CategoryService extends ServiceHelper {
 
   constructor(
     private http: HttpClient, private router: Router, public snackBar: MatSnackBar) {
     super(snackBar);
   }
 
-  getItems(categoryId:string) {
-    return this.http.get(this.apiAddress + '/items/list/' + categoryId, this.generateHeadersWithToken());
+  getCategories() {
+    return this.http.get(this.apiAddress + '/category/list', this.generateHeadersWithToken());
   }
 
-  addItem(item:any) {
+  addCategory(item:any) {
     //return this.http.get(this.apiAddress + '/users/list', this.generateHeadersWithToken());
   }
+
 
 }
