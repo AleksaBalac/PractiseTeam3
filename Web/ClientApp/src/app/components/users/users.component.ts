@@ -38,7 +38,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   openUserModal(user: User) {
     let dialogRef = this.dialog.open(UserModalComponent, {
-      width: '60%',
+      width: '30%',
       data: { 'role': this.roles, 'user': user }
     });
 
