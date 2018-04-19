@@ -28,10 +28,14 @@ namespace Repository
             {
                 //var users = AppDbContext.CompanyAccount.Where(a => a.UserId == userId)?.Select(a => a.User).ToList();
 
-                var company = AppDbContext.CompanyAccount.Include(a => a.Company).FirstOrDefault(a => a.UserId == userId)?.Company;
+                var company = AppDbContext.CompanyAccount
+                              .Include(a => a.Company)
+                                    .FirstOrDefault(a => a.UserId == userId)?.Company;
 
-                var users = AppDbContext.CompanyAccount.Include(a => a.User)
-                    .Where(a => a.CompanyId == company.CompanyId).Select(a => a.User).ToList();
+                var users = AppDbContext.CompanyAccount
+                            .Include(a => a.User)
+                                .Where(a => a.CompanyId == company.CompanyId)
+                                       .Select(a => a.User).ToList();
 
                 //var userRole = AppDbContext.UserRoles.FirstOrDefault(a => a.UserId == userId);
                 //var role = AppDbContext.Roles.FirstOrDefault(a => a.Id == userRole.RoleId)?.Name;
@@ -42,6 +46,8 @@ namespace Repository
 
                 foreach (var user in users)
                 {
+                    if(user.Id == userId) continue;//skip logged in user
+                    
                     Task<IList<string>> role = _userManager.GetRolesAsync(user);
 
                     var userViewModel = new UsersViewModel
