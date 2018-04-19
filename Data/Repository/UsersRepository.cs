@@ -178,5 +178,50 @@ namespace Repository
                 throw;
             }
         }
+
+        public async Task<ResponseObject<object>> DeleteUserAsync(string userId)
+        {
+            var response = new ResponseObject<object>();
+
+            try
+            {
+                var user = _userManager.Users.FirstOrDefault(a => a.Id == userId);
+                if (user == null)
+                {
+                    response.Message = "Can't find user!";
+                    response.Success = false;
+                    return response;
+                }
+
+                //first delete user from companyAccount
+                var companyAccount = await AppDbContext.CompanyAccount.FirstOrDefaultAsync(a => a.UserId == user.Id);
+                if (companyAccount == null)
+                {
+                    response.Message = "Can't find companyAccount!";
+                    response.Success = false;
+                    return response;
+                }
+
+                AppDbContext.CompanyAccount.Remove(companyAccount);
+
+
+                //now from user
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    response.Message = "User is successfully deleted!";
+                    response.Success = true;
+                }
+
+                await AppDbContext.SaveChangesAsync();
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

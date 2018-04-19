@@ -69,6 +69,22 @@ namespace Api.Controllers
             }
         }
 
+        [HttpDelete("users/delete/{userId}")]
+        public Task<ResponseObject<object>> DeleteUser(string userId)
+        {
+            try
+            {
+                var result = _repositoryWrapper.Users.DeleteUserAsync(userId);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         [HttpGet("users/list/roles")]
         public ResponseObject<object> GetListOfRoles()
         {

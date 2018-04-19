@@ -10,5 +10,6 @@ namespace Contracts
         Task<ResponseObject<object>> SaveNewUserAsync(string userId, UsersViewModel usersViewModel);
         ResponseObject<object> GetListOfRoles();
         Task<ResponseObject<object>> UpdateUserAsync(UsersViewModel userViewModel);
+        Task<ResponseObject<object>> DeleteUserAsync(string userId);
     }
 }

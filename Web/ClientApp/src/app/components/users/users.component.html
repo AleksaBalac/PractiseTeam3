@@ -13,9 +13,9 @@
 <div class="row">
   <div class="col-md-12">
 
-    <mat-spinner *ngIf="user.length == 0"></mat-spinner>
+    <mat-spinner *ngIf="users.length == 0"></mat-spinner>
 
-    <div *ngIf="user.length > 0" class="example-container mat-elevation-z8">
+    <div *ngIf="users.length > 0" class="example-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource">
 
         <ng-container matColumnDef="firstName">
@@ -46,7 +46,7 @@
               <mat-icon class="example-icon">edit</mat-icon> Edit
             </button>
 
-            <button color="accent" mat-raised-button (click)="onDeleteUser(user.id)">
+            <button color="accent" mat-raised-button (click)="onDeleteUser(user)">
               <mat-icon class="example-icon">delete</mat-icon> Delete
             </button>
 

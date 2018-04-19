@@ -29,6 +29,8 @@ export class UsersService extends ServiceHelper {
     return this.http.put(this.apiAddress + '/users/update', user, this.generateHeaders());
   }
 
-  deleteUser(id: string) { }
+  deleteUser(userId: string) {
+    return this.http.delete(this.apiAddress + '/users/delete/' + userId,  this.generateHeaders());
+  }
 
 }

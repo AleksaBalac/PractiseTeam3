@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { UsersService } from '../../services/users.service';
 import { UserModalComponent } from './modal/user.modal.component';
@@ -12,19 +12,19 @@ import { User } from '../../interface/user.interface';
 })
 
 export class UsersComponent implements OnInit, AfterViewInit {
-  user: User[] = [];
+  users: User[] = [];
   roles: any;
 
   displayedColumns = ['firstName', 'lastName', 'email', 'role', 'action'];
-  dataSource = new MatTableDataSource<User>(this.user);
+  dataSource = new MatTableDataSource<User>(this.users);
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private userService: UsersService, public dialog: MatDialog) { }
+  constructor(private userService: UsersService, public dialog: MatDialog, public snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.userService.getUsers().subscribe((res: any) => {
-      this.user = res.data;
-      this.dataSource.data = this.user;
+      this.users = res.data;
+      this.dataSource.data = this.users;
     });
 
     this.userService.getRoles().subscribe((res: any) => {
@@ -36,7 +36,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  openUserModal(user:User) {
+  openUserModal(user: User) {
     let dialogRef = this.dialog.open(UserModalComponent, {
       width: '60%',
       data: { 'role': this.roles, 'user': user }
@@ -44,23 +44,30 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != undefined && user == null) {
-        this.user.unshift(result);
-        this.dataSource.data = this.user;
+        this.users.unshift(result);
+        this.dataSource.data = this.users;
       }
       else if (user != null && result != undefined) {
         user = result;
       }
     });
   }
-  
-  //onEditUser(user: string) {
-  //  let user = this.user.find(a=>a.id===userId);
 
-  //  this.openUserModal(user);
-  //}
+  onDeleteUser(user: User) {
+    this.userService.deleteUser(user.id).subscribe((res: any) => {
+      if (res.success) {
+        this.users.slice(1, this.users.indexOf(user));
+        this.users.splice(this.users.indexOf(user), 1);
+        this.dataSource.data = this.users;
+        this.openSnackBar(res.message, 'Close');
+      }
+    });
+  }
 
-  onDeleteUser(userId: string) {
-    console.log(userId);
+  public openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 4000,
+    });
   }
 
 }
