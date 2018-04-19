@@ -1,1 +1,30 @@
-<h1>Items</h1>
+<form class="example-form">
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Value" [(ngModel)]="item.value" name="value" [formControl]="valueFormControl">
+    <mat-error *ngIf="valueFormControl.hasError('required')">
+      Value is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Description" [(ngModel)]="item.description" name="description" [formControl]="descriptionFormControl">
+    <mat-error *ngIf="descriptionFormControl.hasError('required')">
+      Description is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Category" name="category" [(ngModel)]="item.category.name">
+      <mat-option *ngFor="let category of data.categories" [value]="category.name">
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="onSave()">Save</button>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+  </div>
+
+</form>

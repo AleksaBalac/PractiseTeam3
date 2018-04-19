@@ -24,6 +24,11 @@
     <mat-form-field class="pull-left filter">
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
     </mat-form-field>
+
+    <button mat-raised-button color="primary" class="pull-right" (click)="openItemModal(null)">
+      <mat-icon class="example-icon">add</mat-icon>Add item
+    </button>
+
   </div>
 
   <mat-table #table [dataSource]="dataSource" matSort>

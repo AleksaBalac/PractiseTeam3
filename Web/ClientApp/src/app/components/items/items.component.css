@@ -22,6 +22,10 @@ example-container .mat-form-field {
   color: black;
 }
 
+button.pull-right {
+  margin-top:7px;
+}
+
 mat-cell {
   white-space: nowrap;
   overflow: hidden;
@@ -29,7 +33,7 @@ mat-cell {
 }
 
 .clickable {
-  margin-top:12px;
+  margin:12px 0 0 5px;
 }
 
 .clickable:hover {
