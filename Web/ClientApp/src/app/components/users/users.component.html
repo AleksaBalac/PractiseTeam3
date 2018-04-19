@@ -40,6 +40,7 @@
 
         <ng-container matColumnDef="action">
           <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+
           <mat-cell *matCellDef="let user">
 
             <button color="primary" mat-raised-button (click)="openUserModal(user)">
@@ -58,7 +59,7 @@
       </mat-table>
 
       <mat-paginator #paginator
-                     [pageSize]="10"
+                     [pageSize]="5"
                      [pageSizeOptions]="[5, 10, 20]"
                      [showFirstLastButtons]="true">
       </mat-paginator>

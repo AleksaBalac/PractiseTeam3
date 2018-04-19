@@ -14,8 +14,12 @@ import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CounterComponent } from './components/counter/counter.component';
 import { ContactComponent } from './components/contact/contact.component';
+
 import { UsersComponent } from './components/users/users.component';
 import { UserModalComponent } from './components/users/modal/user.modal.component';
+
+import { ItemsComponent } from './components/items/items.component';
+import { ItemModalComponent } from './components/items/modal/item.modal.component';
 
 import { LoginComponent } from './components/account/login/login.component';
 import { RegisterComponent } from './components/account/register/register.component';
@@ -25,6 +29,7 @@ import { AuthenticateXHRBackend } from './authenticate-xhr.backend';
 
 import { AccountService } from './services/account.service';
 import { UsersService } from './services/users.service';
+import { ItemService } from './services/item.service';
 
 
 @NgModule({
@@ -37,7 +42,9 @@ import { UsersService } from './services/users.service';
     LoginComponent,
     RegisterComponent,
     UsersComponent,
-    UserModalComponent
+    UserModalComponent,
+    ItemsComponent,
+    ItemModalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -49,6 +56,7 @@ import { UsersService } from './services/users.service';
     RouterModule.forRoot([
       { path: 'dashboard', component: DashboardComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+      { path: 'items', component: ItemsComponent, canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'counter', component: CounterComponent },
@@ -56,12 +64,14 @@ import { UsersService } from './services/users.service';
     ])
   ],
   entryComponents: [
-    UserModalComponent
+    UserModalComponent,
+    ItemModalComponent
   ],
   providers:
     [
       AccountService,
       UsersService,
+      ItemService,
       AuthGuard, {
         provide: XHRBackend,
         useClass: AuthenticateXHRBackend
