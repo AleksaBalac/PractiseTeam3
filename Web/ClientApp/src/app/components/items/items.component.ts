@@ -7,6 +7,7 @@ import { MatTableDataSource, MatPaginator, MatSort, MatDialog, MatSnackBar } fro
 import { ItemModalComponent } from './modal/item.modal.component';
 import { CategoryModalComponent } from './modal/category.modal.component';
 import { SelectionModel } from '@angular/cdk/collections';
+import { ExcelService } from '../../services/excel.service';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class ItemsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild((MatSort) as any) sort: MatSort;
 
-  constructor(private itemService: ItemService, private categoryService: CategoryService, public dialog: MatDialog, public snackBar: MatSnackBar) { }
+  constructor(private itemService: ItemService, private categoryService: CategoryService, public dialog: MatDialog, public snackBar: MatSnackBar, private excelService: ExcelService) { }
 
   ngOnInit() {
     this.getCategories();
@@ -122,9 +123,10 @@ export class ItemsComponent implements OnInit {
       this.selection.clear() :
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
-  
+
   onExportToExcel() {
-    console.log(this.selection.selected);
+    
+    this.excelService.exportAsExcelFile(this.selection.selected.sort(), 'InventoryItems');
   }
 
   public openSnackBar(message: string, action: string) {

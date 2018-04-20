@@ -33,6 +33,7 @@ import { AccountService } from './services/account.service';
 import { UsersService } from './services/users.service';
 import { ItemService } from './services/item.service';
 import { CategoryService } from './services/category.service';
+import { ExcelService } from './services/excel.service';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { CategoryService } from './services/category.service';
     BrowserAnimationsModule,
     MaterialModule,
     RouterModule.forRoot([
+      //{ path: '**', component: DashboardComponent, canActivate: [AuthGuard] },
       { path: 'dashboard', component: DashboardComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
       { path: 'items', component: ItemsComponent, canActivate: [AuthGuard] },
@@ -77,6 +79,7 @@ import { CategoryService } from './services/category.service';
       UsersService,
       ItemService,
       CategoryService,
+      ExcelService,
       AuthGuard, {
         provide: XHRBackend,
         useClass: AuthenticateXHRBackend
