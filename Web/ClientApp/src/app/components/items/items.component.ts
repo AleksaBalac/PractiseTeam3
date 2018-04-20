@@ -50,19 +50,18 @@ export class ItemsComponent implements OnInit {
   }
 
   openItemModal(item: Item) {
-    const original = this.dataSource.data;
     let dialogRef = this.dialog.open(ItemModalComponent, {
       width: '30%',
       data: { 'categories': this.categories, 'item': item }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined && result != 'undo') {
-        if (item != null && item.category.categoryId != result.category.categoryId) {
+      if (result != undefined && result !== 'undo') {
+        if (item != null && item.category.categoryId !== result.category.categoryId) {
           this.items.splice(this.items.indexOf(item), 1);
           this.dataSource.data = this.items;
         }
-        else if (item.inventoryItemId == result.inventoryItemId) {
+        else if (item.inventoryItemId === result.inventoryItemId) {
           this.dataSource.data = this.items;
         }
         else {
@@ -70,7 +69,7 @@ export class ItemsComponent implements OnInit {
           this.dataSource.data = this.items;
         }
       } else {
-        this.dataSource.data = original;
+        this.onCategoryChange(this.category);
       }
 
     });
