@@ -40,6 +40,26 @@ namespace Entities.Models
                 //    await _roleManager.CreateAsync(role);
                 //}
 
+
+                var roleStore = new RoleStore<IdentityRole>(_appDbContext);
+
+                if (!_appDbContext.Roles.Any(r => r.Name == "SuperAdmin"))
+                {
+                    await roleStore.CreateAsync(new IdentityRole { Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
+                }
+
+                if (!_appDbContext.Roles.Any(r => r.Name == "CompanyAdmin"))
+                {
+                    await roleStore.CreateAsync(new IdentityRole { Name = "CompanyAdmin", NormalizedName = "COMPANYADMIN" });
+                }
+
+                if (!_appDbContext.Roles.Any(r => r.Name == "User"))
+                {
+                    await roleStore.CreateAsync(new IdentityRole { Name = "User", NormalizedName = "USER" });
+                }
+
+                roleStore.Dispose();
+
                 User user = null;
 
                 if (!_userManager.Users.Any())
