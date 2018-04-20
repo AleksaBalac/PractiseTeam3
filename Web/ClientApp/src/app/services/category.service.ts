@@ -3,6 +3,7 @@ import { ServiceHelper } from './service.helper';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
+import { Category } from '../interface/category.interface';
 
 @Injectable()
 export class CategoryService extends ServiceHelper {
@@ -16,8 +17,12 @@ export class CategoryService extends ServiceHelper {
     return this.http.get(this.apiAddress + '/category/list', this.generateHeadersWithToken());
   }
 
-  addCategory(item:any) {
-    //return this.http.get(this.apiAddress + '/users/list', this.generateHeadersWithToken());
+  addCategory(category: string) {
+    let categoryViewModel: Category = <Category>{
+      categoryId: '',
+      name: category
+    }
+    return this.http.post(this.apiAddress + '/category/add', categoryViewModel, this.generateHeadersWithToken());
   }
 
 

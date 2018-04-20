@@ -1,15 +1,10 @@
 <h1>Items</h1>
 
-
-
 <div class="example-container mat-elevation-z8">
-
-
-
-
+  
   <div class="example-header">
     <mat-form-field class="pull-left">
-      <mat-select placeholder="Select category" [(ngModel)]="category" (change)="onCategoryChange(category)">
+      <mat-select placeholder="Select category" [(ngModel)]="category" (change)="onCategoryChange(category)" [value]="selectedOption">
         <mat-option *ngFor="let category of categories" [value]="category.categoryId">
           {{ category.name }}
         </mat-option>

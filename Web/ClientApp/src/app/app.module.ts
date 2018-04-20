@@ -21,6 +21,8 @@ import { UserModalComponent } from './components/users/modal/user.modal.componen
 import { ItemsComponent } from './components/items/items.component';
 import { ItemModalComponent } from './components/items/modal/item.modal.component';
 
+import { CategoryModalComponent } from './components/items/modal/category.modal.component';
+
 import { LoginComponent } from './components/account/login/login.component';
 import { RegisterComponent } from './components/account/register/register.component';
 
@@ -31,7 +33,6 @@ import { AccountService } from './services/account.service';
 import { UsersService } from './services/users.service';
 import { ItemService } from './services/item.service';
 import { CategoryService } from './services/category.service';
-
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { CategoryService } from './services/category.service';
     UsersComponent,
     UserModalComponent,
     ItemsComponent,
-    ItemModalComponent
+    ItemModalComponent,
+    CategoryModalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -66,7 +68,8 @@ import { CategoryService } from './services/category.service';
   ],
   entryComponents: [
     UserModalComponent,
-    ItemModalComponent
+    ItemModalComponent,
+    CategoryModalComponent
   ],
   providers:
     [

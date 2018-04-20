@@ -5,6 +5,7 @@ import { Category } from '../../interface/category.interface';
 import { CategoryService } from '../../services/category.service';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog, MatSnackBar } from '@angular/material';
 import { ItemModalComponent } from './modal/item.modal.component';
+import { CategoryModalComponent } from './modal/category.modal.component';
 
 @Component({
   selector: 'app-items',
@@ -14,8 +15,9 @@ import { ItemModalComponent } from './modal/item.modal.component';
 
 export class ItemsComponent implements OnInit {
   items: Item[];
-  categories: Category[] = [];
+  categories: Category[];
   category: Category;
+  selectedOption: string;
 
   displayedColumns = ['orderNumber', 'value', 'description', 'barCode', 'action'];
   dataSource = new MatTableDataSource<Item>(this.items);
@@ -28,14 +30,17 @@ export class ItemsComponent implements OnInit {
   ngOnInit() {
     this.categoryService.getCategories().subscribe((res: any) => {
       this.categories = res.data;
-    })
+      this.selectedOption = this.categories[0].categoryId;
+    });
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
 
+
+  }
+  
   openItemModal(item: Item) {
     const original = this.dataSource.data;
     let dialogRef = this.dialog.open(ItemModalComponent, {
@@ -76,8 +81,20 @@ export class ItemsComponent implements OnInit {
     this.dataSource.filter = filterValue;
   }
 
-  openCategoryModal(category: Category) {
-    console.log(category);
+  openCategoryModal() {
+    let dialogRef = this.dialog.open(CategoryModalComponent, {
+      width: '50%',
+      data: { 'categories': this.categories }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != undefined) {
+        
+      } else {
+        
+      }
+
+    });
   }
 
   onDeleteItem(item: Item) {
