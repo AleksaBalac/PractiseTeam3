@@ -12,7 +12,7 @@ import { User } from '../../interface/user.interface';
 })
 
 export class UsersComponent implements OnInit, AfterViewInit {
-  users: User[] = [];
+  users: User[];
   roles: any;
   showSpinner:boolean;
 
@@ -25,19 +25,24 @@ export class UsersComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.showSpinner = true;
 
+    this.userService.getRoles().subscribe((res: any) => {
+      this.roles = res.data;
+    });
+
+    this.getUsers();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
+
+  getUsers() {
     this.userService.getUsers().subscribe((res: any) => {
       this.users = res.data;
       this.dataSource.data = this.users;
       this.showSpinner = false;
     });
-
-    this.userService.getRoles().subscribe((res: any) => {
-      this.roles = res.data;
-    });
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
 
   openUserModal(user: User) {
@@ -47,6 +52,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      if (result === 'undo') return this.getUsers();
+
       if (result != undefined && user == null) {
         this.users.unshift(result);
         this.dataSource.data = this.users;

@@ -46,8 +46,8 @@ namespace Repository
 
                 foreach (var user in users)
                 {
-                    if(user.Id == userId) continue;//skip logged in user
-                    
+                    if (user.Id == userId) continue;//skip logged in user
+
                     Task<IList<string>> role = _userManager.GetRolesAsync(user);
 
                     var userViewModel = new UsersViewModel
@@ -101,18 +101,25 @@ namespace Repository
                     EmailConfirmed = true
                 };
 
+                CompanyAccount companyAccount = null;
+
+                if (usersViewModel.Role != "User")
+                {
+
+                    //create account company
+                    companyAccount = new CompanyAccount
+                    {
+                        CompanyAccountId = Guid.NewGuid().ToString(),
+                        UserId = user.Id,
+                        CompanyId = company?.CompanyId
+                    };
+                }
+
+                if(companyAccount != null) await AppDbContext.CompanyAccount.AddAsync(companyAccount);
+
                 await _userManager.CreateAsync(user, "Pass1234");//TODO change default password with email registration
                 await _userManager.AddToRoleAsync(user, usersViewModel.Role ?? "CompanyAdmin");
 
-                //create account company
-                var companyAccount = new CompanyAccount
-                {
-                    CompanyAccountId = Guid.NewGuid().ToString(),
-                    UserId = user.Id,
-                    CompanyId = company?.CompanyId
-                };
-
-                await AppDbContext.CompanyAccount.AddAsync(companyAccount);
                 await AppDbContext.SaveChangesAsync();
 
                 response.Success = true;

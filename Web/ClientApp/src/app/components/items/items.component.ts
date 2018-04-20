@@ -69,7 +69,7 @@ export class ItemsComponent implements OnInit {
           this.dataSource.data = this.items;
         }
       } else {
-        this.onCategoryChange(this.category);
+        this.onCategoryChange(String(this.category));
       }
 
     });
