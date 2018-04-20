@@ -28,6 +28,10 @@ export class ItemsComponent implements OnInit {
   constructor(private itemService: ItemService, private categoryService: CategoryService, public dialog: MatDialog, public snackBar: MatSnackBar) { }
 
   ngOnInit() {
+    this.getCategories();
+  }
+
+  getCategories() {
     this.categoryService.getCategories().subscribe((res: any) => {
       this.categories = res.data;
       this.selectedOption = this.categories[0].categoryId;
@@ -37,8 +41,6 @@ export class ItemsComponent implements OnInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-
   }
   
   openItemModal(item: Item) {
@@ -93,7 +95,7 @@ export class ItemsComponent implements OnInit {
       } else {
         
       }
-
+      this.getCategories();
     });
   }
 

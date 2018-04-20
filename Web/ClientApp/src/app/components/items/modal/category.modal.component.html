@@ -1,4 +1,4 @@
-<mat-form-field class="demo-chip-list">
+<!--<mat-form-field class="demo-chip-list">
   <mat-chip-list #chipList>
     <mat-chip *ngFor="let category of data.categories" [selectable]="selectable"
              [removable]="removable" (remove)="remove(category)">
@@ -11,4 +11,85 @@
            [matChipInputAddOnBlur]="addOnBlur"
            (matChipInputTokenEnd)="add($event)" />
   </mat-chip-list>
-</mat-form-field>
+</mat-form-field>-->
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="pull-right">
+      <button color="primary" class="pull-right" mat-raised-button (click)="showNewCategoryForm()">
+        <mat-icon class="example-icon">add</mat-icon> Add new category
+      </button>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<div class="row">
+  <div class="col-md-12">
+    <mat-accordion>
+
+      <div *ngIf="showPanel">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              New category
+            </mat-panel-title>
+            <mat-panel-description>
+              Click here to add new category
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <input matInput placeholder="Name" [(ngModel)]="category.name" name="category">
+          </mat-form-field>
+
+          <button color="primary" class="pull-right" mat-raised-button (click)="onSaveCategory(category)">
+            <mat-icon class="example-icon">save</mat-icon> Save
+          </button>
+
+
+
+        </mat-expansion-panel>
+
+        <br />
+        <br />
+      </div>
+
+      <mat-expansion-panel *ngFor="let category of categories">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{category.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+            Click here to change {{category.name}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-form-field>
+          <input matInput placeholder="Name" [(ngModel)]="category.name" name="category">
+        </mat-form-field>
+
+        <button color="accent" class="pull-right" mat-raised-button (click)="onDeleteCategory(category)">
+          <mat-icon class="example-icon">delete</mat-icon> Delete
+        </button>
+
+        <button color="primary" class="pull-right" mat-raised-button (click)="onSaveCategory(category)">
+          <mat-icon class="example-icon">save</mat-icon> Save
+        </button>
+
+
+      </mat-expansion-panel>
+
+
+
+    </mat-accordion>
+
+    <div class="pull-right" mat-dialog-actions>
+      <button color="primary" class="pull-right" mat-raised-button (click)="onNoClick()">
+        Close
+      </button>
+
+    </div>
+  </div>
+</div>

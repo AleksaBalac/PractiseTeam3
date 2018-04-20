@@ -1,3 +1,8 @@
-.demo-chip-list {
+
+mat-expansion-panel {
   width: 100%;
+}
+
+mat-expansion-panel button.pull-right {
+  margin:12px 0 0 5px;
 }

@@ -3,7 +3,8 @@ import { CategoryService } from '../../../services/category.service';
 import { MatSnackBar, MatDialogRef, MAT_DIALOG_DATA, MatChipInputEvent } from '@angular/material';
 import { ServiceHelper } from '../../../services/service.helper';
 import { Category } from '../../../interface/category.interface';
-import {ENTER, COMMA} from '@angular/cdk/keycodes';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-category-modal',
@@ -11,16 +12,15 @@ import {ENTER, COMMA} from '@angular/cdk/keycodes';
   styleUrls: ['./category.modal.component.css']
 })
 export class CategoryModalComponent extends ServiceHelper implements OnInit {
-  categories:Category[];
+  categories: Category[];
+  category: Category = <Category>{};
 
-  visible: boolean = true;
-  selectable: boolean = true;
-  removable: boolean = true;
-  addOnBlur: boolean = true;
+  panelOpenState: boolean = false;
+  showPanel: boolean = false;
 
-  // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
-
+  nameFormControl = new FormControl('', [
+    Validators.required
+  ]);
 
   constructor(public dialogRef: MatDialogRef<CategoryModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public snackBar: MatSnackBar, private categoryService: CategoryService) {
 
@@ -32,54 +32,33 @@ export class CategoryModalComponent extends ServiceHelper implements OnInit {
     this.categories = this.data.categories;
   }
 
-  add(event: MatChipInputEvent): void {
-    let input = event.input;
-    let value = event.value;
+  showNewCategoryForm() {
+    this.showPanel = !this.showPanel;
+  }
 
-    // Add our fruit
-    if ((value || '').trim()) {
-      //this.categories.push({ name: value.trim() });
-      console.log('dodaj', value);
-      //this.categories.push((value) as any);
-      this.categoryService.addCategory(value).subscribe((res: any) => {
-        this.categories.push(res.data);
+  onSaveCategory(category: Category) {
+    if (category.categoryId != null) {
+      this.categoryService.updateCategory(category).subscribe((res: any) => {
         this.openSnackBar(res.message, 'Close');
+        //this.dialogRef.close(this.categories);
+      });
+    } else {
+      this.categoryService.addCategory(this.category.name).subscribe((res: any) => {
+        this.openSnackBar(res.message, 'Close');
+        this.categories.unshift(res.data);
+        this.showNewCategoryForm();
+        this.category = <Category>{};
+        //this.dialogRef.close(this.categories);
       });
     }
 
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
   }
 
-  remove(category: Category): void {
-    let index = this.categories.indexOf(category);
-
-    if (index >= 0) {
-      this.categories.splice(index, 1);
-    }
-  }
-
-  onSave() {
-    //if (this.mode === 'add') {
-    //  this.itemService.addItem(this.item).subscribe((res: any) => {
-    //    this.openSnackBar(res.message, 'Close');
-    //    this.dialogRef.close(res.data);
-    //  },
-    //    error => {
-    //      console.log(error);
-    //    });
-    //} else {
-    //  this.itemService.updateItem(this.item).subscribe((res: any) => {
-    //    this.openSnackBar(res.message, 'Close');
-    //    this.dialogRef.close(res.data);
-    //  },
-    //    error => {
-    //      console.log(error);
-    //    });
-    //}
-
+  onDeleteCategory(category: Category) {
+    this.categoryService.deleteCategory(category.categoryId).subscribe((res: any) => {
+      this.categories.splice(this.categories.indexOf(category), 1);
+      this.openSnackBar(res.message, 'Close');
+    });
   }
 
   onNoClick(): void {

@@ -25,5 +25,12 @@ export class CategoryService extends ServiceHelper {
     return this.http.post(this.apiAddress + '/category/add', categoryViewModel, this.generateHeadersWithToken());
   }
 
+  updateCategory(category: Category) {
+    return this.http.put(this.apiAddress + '/category/update', category, this.generateHeaders());
+  }
+
+  deleteCategory(categoryId: string) {
+    return this.http.delete(this.apiAddress + '/category/delete/' + categoryId, this.generateHeaders());
+  }
 
 }
