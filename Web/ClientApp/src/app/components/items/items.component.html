@@ -19,14 +19,34 @@
     <mat-form-field class="pull-left filter">
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
     </mat-form-field>
-
+    
     <button mat-raised-button color="primary" class="pull-right" (click)="openItemModal(null)">
       <mat-icon class="example-icon">add</mat-icon>Add item
+    </button>
+
+    <button mat-raised-button color="primary" class="pull-right export-to-excel" *ngIf="selection.hasValue() && isAllSelected() || selection.hasValue() && !isAllSelected()"  (click)="onExportToExcel()">
+      <mat-icon class="example-icon">import_export</mat-icon>Export to excel
     </button>
 
   </div>
 
   <mat-table #table [dataSource]="dataSource" matSort>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
 
     <!-- OrderNumber Column -->
     <ng-container matColumnDef="orderNumber">

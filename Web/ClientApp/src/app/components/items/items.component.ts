@@ -6,6 +6,8 @@ import { CategoryService } from '../../services/category.service';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog, MatSnackBar } from '@angular/material';
 import { ItemModalComponent } from './modal/item.modal.component';
 import { CategoryModalComponent } from './modal/category.modal.component';
+import { SelectionModel } from '@angular/cdk/collections';
+
 
 @Component({
   selector: 'app-items',
@@ -17,13 +19,16 @@ export class ItemsComponent implements OnInit {
   items: Item[];
   categories: Category[];
   category: Category;
+
   selectedOption: string;
 
-  displayedColumns = ['orderNumber', 'value', 'description', 'barCode', 'action'];
+  displayedColumns = ['select', 'orderNumber', 'value', 'description', 'barCode', 'action'];
   dataSource = new MatTableDataSource<Item>(this.items);
+  selection = new SelectionModel<Item>(true, []);
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild((MatSort) as any) sort: MatSort;
 
   constructor(private itemService: ItemService, private categoryService: CategoryService, public dialog: MatDialog, public snackBar: MatSnackBar) { }
 
@@ -42,7 +47,7 @@ export class ItemsComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
-  
+
   openItemModal(item: Item) {
     const original = this.dataSource.data;
     let dialogRef = this.dialog.open(ItemModalComponent, {
@@ -90,11 +95,6 @@ export class ItemsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined) {
-        
-      } else {
-        
-      }
       this.getCategories();
     });
   }
@@ -109,6 +109,23 @@ export class ItemsComponent implements OnInit {
     });
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+  
+  onExportToExcel() {
+    console.log(this.selection.selected);
+  }
 
   public openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
