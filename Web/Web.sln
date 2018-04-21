@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "..\Data\Contra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels", "..\Data\ViewModels\ViewModels\ViewModels.csproj", "{EB7E8901-E35E-4BF5-98F4-7464DEC0AD27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\Data\Core\Core\Core.csproj", "{2311F093-FFDF-478F-B5EA-09318A5138EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Data\Core\Core\Core.csproj", "{2311F093-FFDF-478F-B5EA-09318A5138EC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{BDFC995B-89EF-481A-99C1-25502F0782B1}"
 EndProject
