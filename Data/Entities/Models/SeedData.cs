@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -22,66 +23,67 @@ namespace Entities.Models
         {
             try
             {
-                //if (! await _roleManager.RoleExistsAsync("SuperAdmin"))
-                //{
-                //    var role = new IdentityRole("SuperAdmin");
-                //    await _roleManager.CreateAsync(role);
-                //}
+                //await CreateRoles();
 
-                //if (!await _roleManager.RoleExistsAsync("CompanyAdmin"))
-                //{
-                //    var role = new IdentityRole("CompanyAdmin");
-                //    await _roleManager.CreateAsync(role);
-                //}
-
-                //if (!await _roleManager.RoleExistsAsync("User"))
-                //{
-                //    var role = new IdentityRole("User");
-                //    await _roleManager.CreateAsync(role);
-                //}
+                await CreateCompanyAccountAsync();
 
 
-                var roleStore = new RoleStore<IdentityRole>(_appDbContext);
-
-                if (!_appDbContext.Roles.Any(r => r.Name == "SuperAdmin"))
+                if (!_userManager.Users.Any(a => a.Email == "superadmin@hotmail.com"))
                 {
-                    await roleStore.CreateAsync(new IdentityRole { Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
-                }
-
-                if (!_appDbContext.Roles.Any(r => r.Name == "CompanyAdmin"))
-                {
-                    await roleStore.CreateAsync(new IdentityRole { Name = "CompanyAdmin", NormalizedName = "COMPANYADMIN" });
-                }
-
-                if (!_appDbContext.Roles.Any(r => r.Name == "User"))
-                {
-                    await roleStore.CreateAsync(new IdentityRole { Name = "User", NormalizedName = "USER" });
-                }
-
-                roleStore.Dispose();
-
-                User user = null;
-
-                if (!_userManager.Users.Any())
-                {
-                    user = new User
+                    var superAdmin = new User
                     {
-                        FirstName = "App",
-                        LastName = "User",
-                        UserName = "appuser@hotmail.com",
-                        Email = "appuser@hotmail.com",
+                        FirstName = "Super",
+                        LastName = "Admin",
+                        UserName = "superadmin@hotmail.com",
+                        Email = "superadmin@hotmail.com",
                         EmailConfirmed = true,
                         LockoutEnabled = false
                     };
-                }
-                
-                CompanyAccount accountCompany = null;
-                Random random = new Random();
 
-                if (!_appDbContext.CompanyAccount.Any())
+
+                    //create super admin
+                    await _userManager.CreateAsync(superAdmin, "Pass1234");
+                    await _userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
+                }
+
+                await _appDbContext.SaveChangesAsync();
+            }
+
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private async Task CreateCompanyAccountAsync()
+        {
+            CompanyAccount companyAccount = null;
+            Random random = new Random();
+
+            User companyUser = null;
+
+            if (!_userManager.Users.Any(a => a.Email == "companyuser1@hotmail.com"))
+            {
+                companyUser = new User
                 {
-                    accountCompany = new CompanyAccount();
-                    accountCompany.Company = new Company
+                    FirstName = "Company",
+                    LastName = "User",
+                    UserName = "companyuser1@hotmail.com",
+                    Email = "companyuser1@hotmail.com",
+                    EmailConfirmed = true,
+                    LockoutEnabled = false
+                };
+
+                await _userManager.CreateAsync(companyUser, "Pass1234");
+                await _userManager.AddToRoleAsync(companyUser, "CompanyAdmin");
+            }
+
+            if (!_appDbContext.CompanyAccount.Any())
+            {
+                companyAccount = new CompanyAccount
+                {
+                    Company = new Company
                     {
                         Name = "Company1",
                         Address = "Some Address",
@@ -425,27 +427,36 @@ namespace Entities.Models
                                 }
                             }
                         }
-                    };
-
-                    accountCompany.User = user;
-                    accountCompany.UserId = user.Id;
-                }
-
-                if (accountCompany != null) await _appDbContext.CompanyAccount.AddAsync(accountCompany);
-
-                if (user != null)
-                {
-                    await _userManager.CreateAsync(user, "Pass1234");
-                    await _userManager.AddToRoleAsync(user, "CompanyAdmin");
-                }
-
-                await _appDbContext.SaveChangesAsync();
+                    },
+                    UserId = companyUser?.Id
+                };
             }
-            catch (Exception e)
+
+            if (companyAccount != null) await _appDbContext.CompanyAccount.AddAsync(companyAccount);
+
+            await _appDbContext.SaveChangesAsync();
+        }
+
+        private async Task CreateRoles()
+        {
+
+            var roleStore = new RoleStore<IdentityRole>(_appDbContext);
+
+            if (!_appDbContext.Roles.Any(r => r.Name == "SuperAdmin"))
             {
-                Console.WriteLine(e);
-                throw;
+                await roleStore.CreateAsync(new IdentityRole { Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
             }
+
+            if (!_appDbContext.Roles.Any(r => r.Name == "CompanyAdmin"))
+            {
+                await roleStore.CreateAsync(new IdentityRole { Name = "CompanyAdmin", NormalizedName = "COMPANYADMIN" });
+            }
+
+            if (!_appDbContext.Roles.Any(r => r.Name == "User"))
+            {
+                await roleStore.CreateAsync(new IdentityRole { Name = "User", NormalizedName = "USER" });
+            }
+
         }
     }
 }

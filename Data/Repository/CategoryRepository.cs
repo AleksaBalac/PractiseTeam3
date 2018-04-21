@@ -37,7 +37,7 @@ namespace Repository
 
                 var categoryListViewModel = new List<CategoryViewModel>();
 
-                foreach (var category in companyAccount.Company.Categories)
+                foreach (var category in companyAccount.Company.Categories.OrderBy(a=>a.Name))
                 {
                     var categoryViewModel = new CategoryViewModel
                     {

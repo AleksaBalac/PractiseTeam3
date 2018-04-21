@@ -21,27 +21,38 @@ namespace Repository
             _userManager = userManager;
         }
 
-        public ResponseObject<object> GetUsersList(string userId)
+        public async Task<ResponseObject<object>> GetUsersList(string userId)
         {
             var response = new ResponseObject<object>();
             try
             {
-                //var users = AppDbContext.CompanyAccount.Where(a => a.UserId == userId)?.Select(a => a.User).ToList();
+                List<User> users = new List<User>();
 
-                var company = AppDbContext.CompanyAccount
+                //check who is logged in 
+                var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(a => a.Id == userId);
+
+                IList<string> userInRole = await _userManager.GetRolesAsync(loggedInUser);
+                
+
+                if (userInRole.Any(a => a.Contains("SuperAdmin")))
+                {
+                    //return all users from database 
+                    users = await _userManager.Users.ToListAsync();
+                }
+
+                if (userInRole.Any(a => a.Contains("CompanyAdmin")))
+                {
+                    var company = AppDbContext.CompanyAccount
                               .Include(a => a.Company)
                                     .FirstOrDefault(a => a.UserId == userId)?.Company;
 
-                var users = AppDbContext.CompanyAccount
+                    users = AppDbContext.CompanyAccount
                             .Include(a => a.User)
                                 .Where(a => a.CompanyId == company.CompanyId)
                                        .Select(a => a.User).ToList();
 
-                //var userRole = AppDbContext.UserRoles.FirstOrDefault(a => a.UserId == userId);
-                //var role = AppDbContext.Roles.FirstOrDefault(a => a.Id == userRole.RoleId)?.Name;
-
-                //Task<IList<User>> users = _userManager.GetUsersInRoleAsync(role);
-
+                }
+                
                 var usersViewModel = new List<UsersViewModel>();
 
                 foreach (var user in users)
@@ -115,7 +126,7 @@ namespace Repository
                     };
                 }
 
-                if(companyAccount != null) await AppDbContext.CompanyAccount.AddAsync(companyAccount);
+                if (companyAccount != null) await AppDbContext.CompanyAccount.AddAsync(companyAccount);
 
                 await _userManager.CreateAsync(user, "Pass1234");//TODO change default password with email registration
                 await _userManager.AddToRoleAsync(user, usersViewModel.Role ?? "CompanyAdmin");

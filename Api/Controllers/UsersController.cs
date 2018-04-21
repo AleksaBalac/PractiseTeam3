@@ -18,7 +18,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("users/list")]
-        public ResponseObject<object> GetUsersList()
+        public Task<ResponseObject<object>> GetUsersList()
         {
             try
             {

@@ -3,7 +3,17 @@
   <mat-toolbar-row>
     <div *ngIf="user.isLoggedIn()">
       <span><mat-icon class="example-icon">person</mat-icon></span>
-      <span *ngIf="userDetails"> {{ userDetails.CompanyName }}</span>
+      <span *ngIf="userDetails">
+
+        <span *ngIf="userDetails.CompanyName">
+          {{ userDetails.CompanyName }}
+        </span>
+
+        <span *ngIf="!userDetails.CompanyName">
+          {{ userDetails.FullName }}
+        </span>
+
+      </span>
       <span *ngIf="!userDetails"> Refresh </span>
     </div>
 
