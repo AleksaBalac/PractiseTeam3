@@ -12,7 +12,7 @@ export class AccountService extends ServiceHelper {
 
   private userDetailsHolder = new BehaviorSubject<any>({});//TODO change this to model or interface
   userDetails = this.userDetailsHolder.asObservable();
-  
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -23,15 +23,24 @@ export class AccountService extends ServiceHelper {
     this.loggedIn = !!localStorage.getItem('auth_token');
     this.getUserDetails();
   }
-  
+
   login(user: any) {
     return this.http.post(this.apiAddress + '/login', user, this.generateHeaders()).subscribe((res: any) => {
+
       localStorage.setItem('auth_token', res.data.auth_token);
       this.getUserDetails();
       this.loggedIn = true;
-      
-      this.openSnackBar('User logged in successfully!','Close');
+
+      this.openSnackBar(res.message, 'Close');
       return this.router.navigate(['/dashboard']);
+
+    }, error => {
+      if (error.error == undefined || error.error.message == undefined) {
+        this.openSnackBar(error, 'Close');
+      } else {
+        this.openSnackBar(error.error.message, 'Close');
+
+      }
     });
   }
 
@@ -61,8 +70,10 @@ export class AccountService extends ServiceHelper {
       .subscribe((res: any) => {
         console.log(res);
         return this.router.navigate(['/login']);
+      }, error => {
+        this.openSnackBar(error.error.message, 'Close');
       });
   }
 
-  
+
 }

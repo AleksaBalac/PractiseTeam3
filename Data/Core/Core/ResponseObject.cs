@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System;
+
+namespace Core
 {
     public class ResponseObject<T>
     {
@@ -9,5 +11,17 @@
         public string Total { get; set; }
 
         public T Data { get; set; }
+
+        public StatusCode StatusCode { get; set; }
+    }
+
+    public enum StatusCode
+    {
+        Ok = 200,
+        Created = 201,
+        Accepted = 202,
+        BadRequest = 400,
+        NotFound = 404,
+        Unauthorized = 401
     }
 }

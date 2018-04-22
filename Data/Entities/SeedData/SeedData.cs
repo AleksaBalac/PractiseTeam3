@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Entities.SeedData
 {
@@ -22,13 +24,91 @@ namespace Entities.SeedData
         {
             try
             {
-                var rolesCreated = await SeedDataRoles.SeedRoles(_appDbContext);
-                if (rolesCreated)
+                var roleStore = new RoleStore<IdentityRole>(_appDbContext);
+
+                if (!_appDbContext.Roles.Any(r => r.Name == "SuperAdmin"))
                 {
-                    var companyAccountCreated = await SeedDataCompanyAccount.SeedCompanyAccountAsync(_appDbContext, _userManager);
-                    if (companyAccountCreated) await CreateSuperAdminAndSave();
+                    await roleStore.CreateAsync(new IdentityRole { Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
                 }
 
+                if (!_appDbContext.Roles.Any(r => r.Name == "CompanyAdmin"))
+                {
+                    await roleStore.CreateAsync(new IdentityRole { Name = "CompanyAdmin", NormalizedName = "COMPANYADMIN" });
+                }
+
+                if (!_appDbContext.Roles.Any(r => r.Name == "User"))
+                {
+                    await roleStore.CreateAsync(new IdentityRole { Name = "User", NormalizedName = "USER" });
+                }
+                    
+                CompanyAccount companyAccount = null;
+                User companyUser = null;
+
+                if (!_userManager.Users.Any(a => a.Email == "companyuser1@hotmail.com"))
+                {
+                    companyUser = new User
+                    {
+                        FirstName = "Company",
+                        LastName = "User",
+                        UserName = "companyuser1@hotmail.com",
+                        Email = "companyuser1@hotmail.com",
+                        EmailConfirmed = true,
+                        LockoutEnabled = false
+                    };
+
+                    await _userManager.CreateAsync(companyUser, "Pass1234");
+                    await _userManager.AddToRoleAsync(companyUser, "CompanyAdmin");
+
+                }
+
+                if (!_appDbContext.CompanyAccount.Any())
+                {
+                    var companyId = Guid.NewGuid().ToString();
+
+                    Company company = new Company
+                    {
+                        CompanyId = companyId,
+                        Name = "Company1",
+                        Address = "Some Address",
+                        ContactPerson = "Name and last name",
+                        ValidLicenceTill = DateTime.Now.AddMonths(7),
+                        Categories = GenerateCategoryList(companyId) //this also generate items for each category
+                    };
+
+                    _appDbContext.Companies.Add(company);
+
+                    companyAccount = new CompanyAccount
+                    {
+                        CompanyAccountId = Guid.NewGuid().ToString(),
+                        UserId = companyUser?.Id,
+                        User = companyUser,
+                        CompanyId = company.CompanyId,
+                        Company = company
+                    };
+                }
+
+                if (companyAccount != null) _appDbContext.CompanyAccount.Add(companyAccount);
+                
+
+                if (!_userManager.Users.Any(a => a.Email == "superadmin@hotmail.com"))
+                {
+                    var superAdmin = new User
+                    {
+                        FirstName = "Super",
+                        LastName = "Admin",
+                        UserName = "superadmin@hotmail.com",
+                        Email = "superadmin@hotmail.com",
+                        EmailConfirmed = true,
+                        LockoutEnabled = false
+                    };
+
+
+                    //create super admin
+                    await _userManager.CreateAsync(superAdmin, "Pass1234");
+                    await _userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
+                }
+
+                _appDbContext.SaveChanges();
             }
 
             catch (Exception e)
@@ -38,27 +118,56 @@ namespace Entities.SeedData
             }
         }
 
-        private async Task CreateSuperAdminAndSave()
+        private ICollection<Category> GenerateCategoryList(string companyId)
         {
-            if (!_userManager.Users.Any(a => a.Email == "superadmin@hotmail.com"))
+            List<Category> categoryList = new List<Category>();
+
+            for (int i = 1; i < 4; i++)
             {
-                var superAdmin = new User
+                var categoryId = Guid.NewGuid().ToString();
+
+                Category category = new Category
                 {
-                    FirstName = "Super",
-                    LastName = "Admin",
-                    UserName = "superadmin@hotmail.com",
-                    Email = "superadmin@hotmail.com",
-                    EmailConfirmed = true,
-                    LockoutEnabled = false
+                    CategoryId = categoryId,
+                    Name = $"Category{i}",
+                    Items = GenerateItemList(categoryId),
+                    CompanyId = companyId
                 };
 
-
-                //create super admin
-                await _userManager.CreateAsync(superAdmin, "Pass1234");
-                await _userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
+                categoryList.Add(category);
             }
 
-            await _appDbContext.SaveChangesAsync();
+            _appDbContext.Categories.AddRange(categoryList);
+
+            return categoryList;
+        }
+
+        private ICollection<InventoryItem> GenerateItemList(string categoryId)
+        {
+            Random random = new Random();
+
+            List<InventoryItem> inventoryItems = new List<InventoryItem>();
+
+            for (int i = 1; i < 41; i++)
+            {
+                InventoryItem inventoryItem = new InventoryItem
+                {
+                    Name = $"Item{i}",
+                    InventoryItemId = Guid.NewGuid().ToString(),
+                    BarCode = Guid.NewGuid().ToString(),
+                    Description =
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consequat, diam ac pretium accumsan, mi turpis dictum dui, sed vulputate neque lacus vel arcu. ",
+                    OrderNumber = i,
+                    Value = random.Next(1, 1000),
+                    CategoryId = categoryId
+                };
+
+                inventoryItems.Add(inventoryItem);
+            }
+
+            _appDbContext.InventoryItems.AddRange(inventoryItems);
+
+            return inventoryItems;
         }
     }
 

@@ -22,7 +22,7 @@ namespace Repository
         private readonly UserManager<User> _userManager;
         private readonly IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
-        
+
         public AccountRepository(AppDbContext appDbContext) : base(appDbContext)
         {
         }
@@ -39,13 +39,22 @@ namespace Repository
         {
             ResponseObject<object> result = new ResponseObject<object>();
 
+            if (loginViewModel.Email == null || loginViewModel.Password == null)
+            {
+                result.Data = null;
+                result.StatusCode = StatusCode.Unauthorized;
+                result.Message = "Can not find email or password!";
+                return result;
+            }
+
             var identity = await GetClaimsIdentity(loginViewModel.Email, loginViewModel.Password);
 
             if (identity == null)
             {
                 //return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid username or password.", ModelState));
                 result.Data = null;
-                result.Message = "Something is wrong on login";
+                result.StatusCode = StatusCode.Unauthorized;
+                result.Message = "Can't find user!";
                 return result;
             }
 
@@ -54,6 +63,7 @@ namespace Repository
             var token = JsonConvert.DeserializeObject(jwt);
 
             result.Data = token;
+            result.StatusCode = StatusCode.Ok;
             result.Message = "User is successfully logged in!";
 
             return result;
@@ -63,67 +73,86 @@ namespace Repository
         {
             ResponseObject<object> result = new ResponseObject<object>();
 
-            //var handler = new JwtSecurityTokenHandler();
-            //JwtSecurityToken tokenS = handler.ReadToken(token) as JwtSecurityToken;
-
-            //var id = tokenS?.Claims?.FirstOrDefault(a => a.Type == "id")?.Value;
-
-            var user = AppDbContext.Users.FirstOrDefault(c => c.Id == userId);
-            var companyAccount = AppDbContext.CompanyAccount.Include(a => a.Company)?.FirstOrDefault(a => a.UserId == user.Id);
-            var roles = await _userManager.GetRolesAsync(user);
-
-            JObject jUser = new JObject()
+            try
             {
-                {"FullName", user?.FullName},
-                {"CompanyName", companyAccount?.Company.Name},
-                {"UserRole", roles.FirstOrDefault()}
-            };
-            
-            result.Data = jUser;
+                var user = AppDbContext.Users.FirstOrDefault(c => c.Id == userId);
+                var companyAccount = AppDbContext.CompanyAccount.Include(a => a.Company)?.FirstOrDefault(a => a.UserId == user.Id);
+                var roles = await _userManager.GetRolesAsync(user);
 
-            return result;
+                JObject jUser = new JObject()
+                {
+                    {"FullName", user?.FullName},
+                    {"CompanyName", companyAccount?.Company.Name},
+                    {"UserRole", roles.FirstOrDefault()}
+                };
 
+                result.Data = jUser;
+                result.StatusCode = StatusCode.Ok;
+
+                return result;
+            }
+
+            catch (Exception e)
+            {
+                //TODO add log
+                result.Data = null;
+                result.Message = e.Message;
+                result.StatusCode = StatusCode.BadRequest;
+
+                return result;
+            }
         }
 
         public async Task<ResponseObject<object>> Register(RegistrationViewModel registrationViewModel)
         {
             var response = new ResponseObject<object>();
 
-            var user = new User
+            try
             {
-                FirstName = registrationViewModel.FirstName,
-                LastName = registrationViewModel.LastName,
-                Email = registrationViewModel.Email,
-                UserName = registrationViewModel.Email,
-                EmailConfirmed = true
-            };
+                var user = new User
+                {
+                    FirstName = registrationViewModel.FirstName,
+                    LastName = registrationViewModel.LastName,
+                    Email = registrationViewModel.Email,
+                    UserName = registrationViewModel.Email,
+                    EmailConfirmed = true
+                };
 
-            var company = new Company
+                var company = new Company
+                {
+                    Name = registrationViewModel.Name,
+                    CompanyId = Guid.NewGuid().ToString()
+                };
+
+                var companyAccount = new CompanyAccount
+                {
+                    CompanyAccountId = Guid.NewGuid().ToString(),
+                    CompanyId = company.CompanyId,
+                    UserId = user.Id
+                };
+
+                var result = await _userManager.CreateAsync(user, registrationViewModel.Password);
+                if (result.Succeeded) AccountConfirm(user);
+
+                var role = _userManager.AddToRoleAsync(user, "CompanyAdmin");
+
+                await AppDbContext.Companies.AddAsync(company);
+                await AppDbContext.CompanyAccount.AddAsync(companyAccount);
+                await AppDbContext.SaveChangesAsync();
+
+                response.Data = null;
+                response.Message = "Successfully registered! Check your email for activation!";
+                response.StatusCode = StatusCode.Ok;
+
+                return response;
+            }
+
+            catch (Exception e)
             {
-                Name = registrationViewModel.Name,
-                CompanyId = Guid.NewGuid().ToString()
-            };
-            
-            var companyAccount = new CompanyAccount
-            {
-                CompanyAccountId = Guid.NewGuid().ToString(),
-                CompanyId = company.CompanyId,
-                UserId = user.Id
-            };
-
-            var result = await _userManager.CreateAsync(user, registrationViewModel.Password);
-            if (result.Succeeded) AccountConfirm(user);
-
-            var role = _userManager.AddToRoleAsync(user, "CompanyAdmin");
-
-            await AppDbContext.Companies.AddAsync(company);
-            await AppDbContext.CompanyAccount.AddAsync(companyAccount);
-            await AppDbContext.SaveChangesAsync();
-
-            response.Data = null;
-            response.Message = "Successfully registered! Check your email for activation!";
-
-            return response;
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
+            }            
         }
 
         private async void AccountConfirm(User user)
@@ -139,7 +168,7 @@ namespace Repository
             //    new { userId = user.Id, code = code },
             //    protocol: Request.Url.Scheme);
 
-            
+
 
             //await _userManager.SendEmailAsync(user.Id,
             //    "Confirm your account",

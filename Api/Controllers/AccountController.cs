@@ -16,22 +16,18 @@ namespace Api.Controllers
         {
             _repositoryWrapper = repositoryWrapper;
         }
-        
+
+
         [HttpPost("login")]
-        public Task<ResponseObject<object>> Login([FromBody]LoginViewModel loginViewModel)
+        public async Task<IActionResult> Login([FromBody]LoginViewModel loginViewModel)
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return null;
-                }
+                var result = await _repositoryWrapper.Account.Login(loginViewModel);
 
-                //EmailService.SendEmail(null,new EventArgs());
+                if (result.StatusCode == Core.StatusCode.Unauthorized) return BadRequest(result);
 
-                var result = _repositoryWrapper.Account.Login(loginViewModel);
-
-                return result;
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -42,15 +38,17 @@ namespace Api.Controllers
         }
 
         [HttpGet("user/details")]
-        public Task<ResponseObject<object>> Details()
+        public async Task<IActionResult> Details()
         {
             try
             {
                 string userId = GetUserIdFromToken();
-                
-                var result = _repositoryWrapper.Account.GetUserDetails(userId);
 
-                return result;
+                var result = await _repositoryWrapper.Account.GetUserDetails(userId);
+
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -61,12 +59,20 @@ namespace Api.Controllers
         }
 
         [HttpPost("register")]
-        public Task<ResponseObject<object>> Register([FromBody] RegistrationViewModel registrationViewModel)
+        public async Task<IActionResult> Register([FromBody] RegistrationViewModel registrationViewModel)
         {
             try
             {
-                var result = _repositoryWrapper.Account.Register(registrationViewModel);
-                return result;
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Data that you entered is not valid!");
+                }
+
+                var result = await _repositoryWrapper.Account.Register(registrationViewModel);
+
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
             }
             catch (Exception e)
             {

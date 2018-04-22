@@ -38,11 +38,7 @@ namespace Api
             services.ConfigureJwt(Configuration);
 
             services.ConfigureRepositoryWrapper();
-
-            //services.AddTransient<SeedDataRoles>();
-            //services.AddTransient<SeedDataCompanyAccount>();
-            //services.AddTransient<SeedDataSuperUser>();
-
+            
             services.AddTransient<SeedData>();
 
             services.AddMvc();
@@ -58,8 +54,7 @@ namespace Api
 
 
             seedData.SeedAdminUser();
-            //seedDataRoles.SeedRoles();
-            //seedDataCompanyAccount.SeedCompanyAccountAsync();
+            
 
             app.UseCors("CorsPolicy");
 
