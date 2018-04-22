@@ -27,6 +27,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
     this.userService.getRoles().subscribe((res: any) => {
       this.roles = res.data;
+    }, error => {
+      this.openSnackBar(error.error.message, 'Close');
     });
 
     this.getUsers();
@@ -42,6 +44,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
       this.users = res.data;
       this.dataSource.data = this.users;
       this.showSpinner = false;
+    }, error => {
+      this.openSnackBar(error.error.message, 'Close');
     });
   }
 
@@ -72,6 +76,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
         this.dataSource.data = this.users;
         this.openSnackBar(res.message, 'Close');
       }
+    }, error => {
+      this.openSnackBar(error.error.message, 'Close');
     });
   }
 

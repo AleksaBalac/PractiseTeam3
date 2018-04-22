@@ -45,7 +45,7 @@ namespace Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env,SeedData seedData)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedData seedData)
         {
             if (env.IsDevelopment())
             {
@@ -53,8 +53,8 @@ namespace Api
             }
 
 
-            seedData.SeedAdminUser();
-            
+            seedData.SeedAdminUserAsync();
+
 
             app.UseCors("CorsPolicy");
 

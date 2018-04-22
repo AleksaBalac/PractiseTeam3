@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AccountService } from './../../../services/account.service';
+import { MatSnackBar } from '@angular/material';
 
 
 @Component({
@@ -11,26 +12,36 @@ import { AccountService } from './../../../services/account.service';
   providers: [AccountService]
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   user: any = {};
-
-
-  emailFormControl = new FormControl('', [
-    Validators.required,
-    Validators.email
-  ]);
-
-  passwordFormControl = new FormControl('', [
-    Validators.required
-  ]);
+  loginForm: FormGroup;
 
   constructor(
     private accountService: AccountService,
-    private router: Router) { }
+    private router: Router,
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar) { }
+
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
+    });
+  }
 
 
   onLogin() {
-    this.accountService.login(this.user);
+    if (!this.loginForm.valid) {
+      return this.openSnackBar('You must provide required data', 'Close');
+    }
+
+    //this.accountService.login(this.user);
   }
 
+  public openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 4000,
+    });
+  }
 }

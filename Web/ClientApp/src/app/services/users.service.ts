@@ -18,7 +18,7 @@ export class UsersService extends ServiceHelper {
   }
 
   getRoles() {
-    return this.http.get(this.apiAddress + '/users/list/roles', this.generateHeaders());
+    return this.http.get(this.apiAddress + '/users/list/roles', this.generateHeadersWithToken());
   }
 
   saveUser(user: any) {

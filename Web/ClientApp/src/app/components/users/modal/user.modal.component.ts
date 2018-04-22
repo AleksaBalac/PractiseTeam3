@@ -11,8 +11,8 @@ import { ServiceHelper } from '../../../services/service.helper';
   styleUrls: ['./user.modal.component.css']
 })
 export class UserModalComponent extends ServiceHelper implements OnInit {
-  user: any = {};
-  mode:string;
+  user: User;
+  mode: string;
 
   firstNameFormControl = new FormControl('', [
     Validators.required
@@ -39,26 +39,27 @@ export class UserModalComponent extends ServiceHelper implements OnInit {
     if (this.data.user != null) {
       this.user = this.data.user;
       this.mode = 'edit';
-    } else this.mode = 'add';
+    } else {
+      this.mode = 'add';
+      this.user = <User>{};
+    }
   }
 
   onSave() {
     if (this.mode === 'add') {
       this.userService.saveUser(this.user).subscribe((res: any) => {
         this.openSnackBar(res.message, 'Close');
-          this.dialogRef.close(this.user);
-        },
-        error => {
-          console.log(error);
-        });
+        this.dialogRef.close(this.user);
+      }, error => {
+        this.openSnackBar(error.error.message, 'Close');
+      });
     } else {
       this.userService.updateUser(this.user).subscribe((res: any) => {
-          this.openSnackBar(res.message, 'Close');
-          this.dialogRef.close(this.user);
-        },
-        error => {
-          console.log(error);
-        });
+        this.openSnackBar(res.message, 'Close');
+        this.dialogRef.close(this.user);
+      }, error => {
+        this.openSnackBar(error.error.message, 'Close');
+      });
     }
 
   }

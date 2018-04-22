@@ -20,27 +20,12 @@ namespace Entities.SeedData
             _userManager = userManager;
         }
 
-        public async void SeedAdminUser()
+        public async void SeedAdminUserAsync()
         {
             try
             {
-                var roleStore = new RoleStore<IdentityRole>(_appDbContext);
+                await AddRoles();
 
-                if (!_appDbContext.Roles.Any(r => r.Name == "SuperAdmin"))
-                {
-                    await roleStore.CreateAsync(new IdentityRole { Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
-                }
-
-                if (!_appDbContext.Roles.Any(r => r.Name == "CompanyAdmin"))
-                {
-                    await roleStore.CreateAsync(new IdentityRole { Name = "CompanyAdmin", NormalizedName = "COMPANYADMIN" });
-                }
-
-                if (!_appDbContext.Roles.Any(r => r.Name == "User"))
-                {
-                    await roleStore.CreateAsync(new IdentityRole { Name = "User", NormalizedName = "USER" });
-                }
-                    
                 CompanyAccount companyAccount = null;
                 User companyUser = null;
 
@@ -80,15 +65,15 @@ namespace Entities.SeedData
                     companyAccount = new CompanyAccount
                     {
                         CompanyAccountId = Guid.NewGuid().ToString(),
-                        UserId = companyUser?.Id,
-                        User = companyUser,
+                        UserId = _userManager.Users.FirstOrDefault(a => a.Email == "companyuser1@hotmail.com")?.Id,
+                        User = _userManager.Users.FirstOrDefault(a => a.Email == "companyuser1@hotmail.com"),
                         CompanyId = company.CompanyId,
                         Company = company
                     };
                 }
 
                 if (companyAccount != null) _appDbContext.CompanyAccount.Add(companyAccount);
-                
+
 
                 if (!_userManager.Users.Any(a => a.Email == "superadmin@hotmail.com"))
                 {
@@ -105,16 +90,39 @@ namespace Entities.SeedData
 
                     //create super admin
                     await _userManager.CreateAsync(superAdmin, "Pass1234");
-                    await _userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
+                    //await _userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
                 }
+
+                var superAdminRole = _userManager.Users.FirstOrDefault(a => a.Email == "superadmin@hotmail.com");
+                IList<string> userInRole = await _userManager.GetRolesAsync(superAdminRole);
+                if(userInRole.Count == 0) await _userManager.AddToRoleAsync(superAdminRole, "SuperAdmin");
 
                 _appDbContext.SaveChanges();
             }
 
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private async Task AddRoles()
+        {
+            var roleStore = new RoleStore<IdentityRole>(_appDbContext);
+
+            if (!_appDbContext.Roles.Any(r => r.Name == "SuperAdmin"))
+            {
+                await roleStore.CreateAsync(new IdentityRole { Name = "SuperAdmin", NormalizedName = "SUPERADMIN" });
+            }
+
+            if (!_appDbContext.Roles.Any(r => r.Name == "CompanyAdmin"))
+            {
+                await roleStore.CreateAsync(new IdentityRole { Name = "CompanyAdmin", NormalizedName = "COMPANYADMIN" });
+            }
+
+            if (!_appDbContext.Roles.Any(r => r.Name == "User"))
+            {
+                await roleStore.CreateAsync(new IdentityRole { Name = "User", NormalizedName = "USER" });
             }
         }
 

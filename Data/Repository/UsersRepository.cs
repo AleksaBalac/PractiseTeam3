@@ -24,6 +24,7 @@ namespace Repository
         public async Task<ResponseObject<object>> GetUsersList(string userId)
         {
             var response = new ResponseObject<object>();
+
             try
             {
                 List<User> users = new List<User>();
@@ -31,8 +32,14 @@ namespace Repository
                 //check who is logged in 
                 var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(a => a.Id == userId);
 
+                if (loggedInUser == null)
+                {
+                    response.Message = "User not found!";
+                    response.StatusCode = StatusCode.BadRequest;
+                    return response;
+                }
+
                 IList<string> userInRole = await _userManager.GetRolesAsync(loggedInUser);
-                
 
                 if (userInRole.Any(a => a.Contains("SuperAdmin")))
                 {
@@ -52,7 +59,7 @@ namespace Repository
                                        .Select(a => a.User).ToList();
 
                 }
-                
+
                 var usersViewModel = new List<UsersViewModel>();
 
                 foreach (var user in users)
@@ -74,13 +81,15 @@ namespace Repository
                 }
 
                 response.Data = usersViewModel;
+                response.StatusCode = StatusCode.Ok;
                 return response;
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
         }
 
@@ -99,6 +108,7 @@ namespace Repository
                 {
                     response.Message = "Can not find company";
                     response.Success = false;
+                    response.StatusCode = StatusCode.BadRequest;
                     return response;
                 }
 
@@ -134,30 +144,68 @@ namespace Repository
                 await AppDbContext.SaveChangesAsync();
 
                 response.Success = true;
+                response.StatusCode = StatusCode.Ok;
                 response.Message = "User is added successfully!";
                 response.Data = null;
                 return response;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
         }
 
-        public ResponseObject<object> GetListOfRoles()
+        public async Task<ResponseObject<object>> GetListOfRoles(string userId)
         {
             var response = new ResponseObject<object>();
 
             try
             {
-                response.Data = AppDbContext.Roles.ToList();
+                var user = await _userManager.Users.FirstOrDefaultAsync(a => a.Id == userId);
+
+                if (user == null)
+                {
+                    response.StatusCode = StatusCode.BadRequest;
+                    response.Message = "Can't find user!";
+                    return response;
+                }
+
+                IList<string> userRole = await _userManager.GetRolesAsync(user);
+
+                var dbRoles = AppDbContext.Roles.ToList();
+
+                List<IdentityRole> roles = new List<IdentityRole>();
+
+                if (userRole.Contains("SuperAdmin"))
+                {
+                    roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("SuperAdmin")));
+                    roles.Add(dbRoles.FirstOrDefault(a=>a.Name.Contains("CompanyAdmin")));
+                    roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("User")));
+                }
+
+                if (userRole.Contains("CompanyAdmin"))
+                {
+                    roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("CompanyAdmin")));
+                    roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("User")));
+                }
+
+                if (userRole.Contains("User"))
+                {
+                    //?
+                    roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("User")));
+                }
+
+                response.Data = roles;
+                response.StatusCode = StatusCode.Ok;
                 return response;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
         }
 
@@ -171,6 +219,7 @@ namespace Repository
                 {
                     response.Message = "Can't find user";
                     response.Success = false;
+                    response.StatusCode = StatusCode.BadRequest;
                     return response;
                 }
 
@@ -186,20 +235,22 @@ namespace Repository
                     if (isInRole)
                     {
                         //TODO discuss what to do if user have another roles
-                        var removed = await _userManager.RemoveFromRolesAsync(user, new List<string> { "SuperAdmin", "CompanyAdmin" });
+                        var removed = await _userManager.RemoveFromRolesAsync(user, new List<string> { "SuperAdmin", "CompanyAdmin", "User" });
                         var addToNewRole = await _userManager.AddToRoleAsync(user, userViewModel.Role);
                     }
                 }
 
                 response.Data = user;
                 response.Success = true;
+                response.StatusCode = StatusCode.Ok;
                 response.Message = "User successfully updated!";
                 return response;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
         }
 
@@ -214,6 +265,7 @@ namespace Repository
                 {
                     response.Message = "Can't find user!";
                     response.Success = false;
+                    response.StatusCode = StatusCode.BadRequest;
                     return response;
                 }
 
@@ -223,28 +275,31 @@ namespace Repository
                 {
                     response.Message = "Can't find companyAccount!";
                     response.Success = false;
+                    response.StatusCode = StatusCode.BadRequest;
                     return response;
                 }
 
                 AppDbContext.CompanyAccount.Remove(companyAccount);
-
 
                 //now from user
                 var result = await _userManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
                     response.Message = "User is successfully deleted!";
+                    response.StatusCode = StatusCode.Ok;
                     response.Success = true;
                 }
 
                 await AppDbContext.SaveChangesAsync();
 
+
                 return response;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
         }
     }

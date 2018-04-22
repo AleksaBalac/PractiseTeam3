@@ -7,26 +7,30 @@
   </mat-card-header>
   
   <mat-card-content>
-    <form class="example-form">
+   
+    <form class="example-form" [formGroup]="loginForm">
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Email" [(ngModel)]="user.email" [formControl]="emailFormControl">
-        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+        <input matInput placeholder="Email" [(ngModel)]="user.email" name="email" formControlName="email">
+        <mat-error *ngIf="loginForm.controls.email.invalid">
           Please enter a valid email address
         </mat-error>
-        <mat-error *ngIf="emailFormControl.hasError('required')">
-          Email is <strong>required</strong>
-        </mat-error>
+
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Password" type="password" [(ngModel)]="user.password" [formControl]="passwordFormControl">
-        <mat-error *ngIf="passwordFormControl.hasError('email') && !passwordFormControl.hasError('required')">
-          Please enter a your password email address
-        </mat-error>
-        <mat-error *ngIf="passwordFormControl.hasError('required')">
+        <input matInput placeholder="Password" type="password" name="password" [(ngModel)]="user.password" formControlName="password">
+        
+        <div *ngIf="loginForm.controls.password.errors">
+          <mat-error *ngIf="loginForm.controls.password.errors.minlength">
+            Password is <strong>too short</strong>
+          </mat-error>
+        </div>
+
+        <mat-error *ngIf="loginForm.controls.password.invalid">
           Password is <strong>required</strong>
         </mat-error>
+
       </mat-form-field>
 
     </form>
@@ -43,9 +47,3 @@
     <a class="pull-right" mat-button [routerLink]='["/register"]'>Register</a>
   </mat-card-actions>
 </mat-card>
-
-
-
-
-
-

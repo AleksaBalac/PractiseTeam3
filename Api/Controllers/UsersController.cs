@@ -18,33 +18,36 @@ namespace Api.Controllers
         }
 
         [HttpGet("users/list")]
-        public Task<ResponseObject<object>> GetUsersList()
+        public async Task<IActionResult> GetUsersList()
         {
             try
             {
                 string userId = GetUserIdFromToken();
 
-                var result = _repositoryWrapper.Users.GetUsersList(userId);
+                var result = await _repositoryWrapper.Users.GetUsersList(userId);
 
-                return result;
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                return BadRequest(e.Message);
             }
         }
 
         [HttpPost("users/add")]
-        public Task<ResponseObject<object>> AddNewUser([FromBody] UsersViewModel userViewModel)
+        public async Task<IActionResult> AddNewUser([FromBody] UsersViewModel userViewModel)
         {
             try
             {
                 string userId = GetUserIdFromToken();
-                
-                var result = _repositoryWrapper.Users.SaveNewUserAsync(userId, userViewModel);
 
-                return result;
+                var result = await _repositoryWrapper.Users.SaveNewUserAsync(userId, userViewModel);
+
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -54,13 +57,15 @@ namespace Api.Controllers
         }
 
         [HttpPut("users/update")]
-        public Task<ResponseObject<object>> UpdateUser([FromBody] UsersViewModel userViewModel)
+        public async Task<IActionResult> UpdateUser([FromBody] UsersViewModel userViewModel)
         {
             try
             {
-                var result = _repositoryWrapper.Users.UpdateUserAsync(userViewModel);
+                var result = await _repositoryWrapper.Users.UpdateUserAsync(userViewModel);
 
-                return result;
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -70,13 +75,15 @@ namespace Api.Controllers
         }
 
         [HttpDelete("users/delete/{userId}")]
-        public Task<ResponseObject<object>> DeleteUser(string userId)
+        public async Task<IActionResult> DeleteUser(string userId)
         {
             try
             {
-                var result = _repositoryWrapper.Users.DeleteUserAsync(userId);
+                var result = await _repositoryWrapper.Users.DeleteUserAsync(userId);
 
-                return result;
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -86,13 +93,17 @@ namespace Api.Controllers
         }
 
         [HttpGet("users/list/roles")]
-        public ResponseObject<object> GetListOfRoles()
+        public async Task<IActionResult> GetListOfRoles()
         {
             try
             {
-                var result = _repositoryWrapper.Users.GetListOfRoles();
+                string userId = GetUserIdFromToken();
 
-                return result;
+                var result = await _repositoryWrapper.Users.GetListOfRoles(userId);
+
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
             }
             catch (Exception e)
             {
