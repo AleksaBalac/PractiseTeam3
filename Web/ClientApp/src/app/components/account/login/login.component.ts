@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
       return this.openSnackBar('You must provide required data', 'Close');
     }
 
-    //this.accountService.login(this.user);
+    this.accountService.login(this.user);
   }
 
   public openSnackBar(message: string, action: string) {

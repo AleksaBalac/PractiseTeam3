@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from './../../services/account.service';
+import { User } from '../../interface/user.interface';
+import { LoggedInUser } from '../../interface/logged.user.interface';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,19 +9,16 @@ import { AccountService } from './../../services/account.service';
   styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent implements OnInit {
-  userDetails: any;
+  userDetails: LoggedInUser = <LoggedInUser>{};
 
 
   constructor(private user: AccountService) {
-    
+
   }
 
   ngOnInit(): void {
     //this.user.getUserDetails().subscribe((res: any) => this.userDetails = res.data);
-    this.user.userDetails.subscribe((res: any) => this.userDetails = res);
+    this.user.userDetails.subscribe((res: LoggedInUser) => this.userDetails = res);
     
   }
-
- 
-
 }

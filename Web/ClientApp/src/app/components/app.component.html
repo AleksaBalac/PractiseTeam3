@@ -5,16 +5,16 @@
       <span><mat-icon class="example-icon">person</mat-icon></span>
       <span *ngIf="userDetails">
 
-        <span *ngIf="userDetails.CompanyName">
-          {{ userDetails.CompanyName }}
+        <span *ngIf="userDetails.companyName">
+          {{ userDetails.companyName }}
         </span>
 
-        <span *ngIf="!userDetails.CompanyName">
-          {{ userDetails.FullName }}
+        <span *ngIf="!userDetails.companyName">
+          {{ userDetails.fullName }}
         </span>
 
       </span>
-      <span *ngIf="!userDetails"> Refresh </span>
+      <span *ngIf="!userDetails"> Refresh page </span>
     </div>
 
     <span class="example-spacer"></span>
@@ -31,13 +31,14 @@
 
 
 <mat-sidenav-container>
+
   <mat-sidenav opened #sidenav mode="side" (opened)="events.push('open!')" (closed)="events.push('close!')">
 
     <app-nav-menu></app-nav-menu>
 
   </mat-sidenav>
-  <mat-sidenav-content>
 
+  <mat-sidenav-content>
     <mat-button-toggle (click)="sidenav.toggle()">
       <i class="material-icons">menu</i>
     </mat-button-toggle>
@@ -45,4 +46,5 @@
     <router-outlet></router-outlet>
 
   </mat-sidenav-content>
+
 </mat-sidenav-container>

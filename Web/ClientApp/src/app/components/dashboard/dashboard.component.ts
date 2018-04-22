@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LoggedInUser } from '../../interface/logged.user.interface';
 import { AccountService } from '../../services/account.service';
 
 @Component({
@@ -7,9 +8,9 @@ import { AccountService } from '../../services/account.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  constructor(private accountService: AccountService) { }
+  constructor(private user: AccountService) { }
 
   ngOnInit() {
-    this.accountService.userDetails.subscribe((res: any) => console.log(res));
+    this.user.getUserDetails();
   }
 }

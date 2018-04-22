@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from './../services/account.service';
+import { User } from '../interface/user.interface';
+import { LoggedInUser } from '../interface/logged.user.interface';
 
 @Component({
   selector: 'app-root',
@@ -8,12 +10,19 @@ import { AccountService } from './../services/account.service';
 })
 export class AppComponent implements OnInit {
   events = [];
-  userDetails:any;
+  userDetails: LoggedInUser = <LoggedInUser>{};
 
   constructor(private user: AccountService) { }
 
   ngOnInit() {
-    this.user.userDetails.subscribe((res: any) => this.userDetails = res);
+    this.getUserDetails();
+  }
+
+  getUserDetails() {
+    this.user.userDetails.subscribe((user: LoggedInUser) => {
+      console.log('app component', user);
+      this.userDetails = user;
+    });
   }
 
   onLogOut() {

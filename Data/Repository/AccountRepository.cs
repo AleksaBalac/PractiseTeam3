@@ -76,15 +76,34 @@ namespace Repository
             try
             {
                 var user = AppDbContext.Users.FirstOrDefault(c => c.Id == userId);
+
+                if (user == null)
+                {
+                    result.Data = null;
+                    result.Message = "Can't find user!";
+                    result.StatusCode = StatusCode.BadRequest;
+
+                    return result;
+                }
+
                 var companyAccount = AppDbContext.CompanyAccount.Include(a => a.Company)?.FirstOrDefault(a => a.UserId == user.Id);
                 var roles = await _userManager.GetRolesAsync(user);
 
                 JObject jUser = new JObject()
                 {
-                    {"FullName", user?.FullName},
-                    {"CompanyName", companyAccount?.Company.Name},
-                    {"UserRole", roles.FirstOrDefault()}
+                    {"fullName", user?.FullName},
+                    {"companyName", companyAccount?.Company.Name},
+                    {"userRole", roles.FirstOrDefault()}
                 };
+
+                //UsersViewModel usersViewModel = new UsersViewModel
+                //{
+                //    FirstName = user.FirstName,
+                //    LastName = user.LastName,
+                //    Email = user.Email,
+                //    Id = user.Id,
+                //    Role = roles[0]
+                //};
 
                 result.Data = jUser;
                 result.StatusCode = StatusCode.Ok;

@@ -1,27 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject, Subject } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { ServiceHelper } from './service.helper';
 import 'rxjs/add/operator/map';
 import { MatSnackBar } from '@angular/material';
+import { LoggedInUser } from '../interface/logged.user.interface';
 
 @Injectable()
 export class AccountService extends ServiceHelper {
   private loggedIn = false;
 
-  private userDetailsHolder = new BehaviorSubject<any>({});//TODO change this to model or interface
-  userDetails = this.userDetailsHolder.asObservable();
+  // userDetails:Subject<LoggedInUser> = new BehaviorSubject<LoggedInUser>(<LoggedInUser>{});
+  userDetails = new Subject();
+  //userDetails = this.userDetailsHolder.asObservable();
 
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-    public snackBar: MatSnackBar) {
+  constructor(private http: HttpClient, private router: Router, public snackBar: MatSnackBar) {
+
     super(snackBar);
 
 
     this.loggedIn = !!localStorage.getItem('auth_token');
     this.getUserDetails();
+
   }
 
   login(user: any) {
@@ -51,7 +52,7 @@ export class AccountService extends ServiceHelper {
   logout() {
     localStorage.removeItem('auth_token');
     this.loggedIn = false;
-    this.userDetailsHolder.next(null);
+    this.userDetails.next(<LoggedInUser>{});
     this.openSnackBar('User logged out successfully!', 'Close');
     this.router.navigate(['/login']);
   }
@@ -62,7 +63,13 @@ export class AccountService extends ServiceHelper {
     }
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get(this.apiAddress + "/user/details", this.generateHeadersWithToken()).subscribe((res: any) => this.userDetailsHolder.next(res.data));
+    return this.http.get(this.apiAddress + "/user/details", this.generateHeadersWithToken()).subscribe((res: any) => {
+      let user = <LoggedInUser>{};
+      user.userRole = res.data.userRole;
+      user.fullName = res.data.fullName;
+      user.companyName = res.data.companyName;
+      this.userDetails.next(user);
+    });
   }
 
   register(user: any) {
@@ -74,6 +81,4 @@ export class AccountService extends ServiceHelper {
         this.openSnackBar(error.error.message, 'Close');
       });
   }
-
-
 }
