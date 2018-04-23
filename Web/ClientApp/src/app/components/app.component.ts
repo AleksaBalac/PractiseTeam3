@@ -8,6 +8,7 @@ import { LoggedInUser } from '../interface/logged.user.interface';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
   events = [];
   userDetails: LoggedInUser = <LoggedInUser>{};
@@ -20,7 +21,6 @@ export class AppComponent implements OnInit {
 
   getUserDetails() {
     this.user.userDetails.subscribe((user: LoggedInUser) => {
-      console.log('app component', user);
       this.userDetails = user;
     });
   }

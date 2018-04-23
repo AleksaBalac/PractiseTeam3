@@ -13,6 +13,7 @@ namespace Repository
         public IAccountRepository Account { get; set; }
         public IUsersRepository Users { get; set; }
         public IItemRepository Items { get; set; }
+        public ICompanyRepository Company { get; set; }
 
         public RepositoryWrapper(AppDbContext repositoryContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
         {
@@ -20,6 +21,7 @@ namespace Repository
             this.Account = new AccountRepository(repositoryContext, userManager, jwtFactory, jwtOptions);
             this.Users = new UsersRepository(repositoryContext, userManager);
             this.Items = new ItemRepository(repositoryContext);
+            this.Company = new CompanyRepository(repositoryContext);
         }
     }
 }
