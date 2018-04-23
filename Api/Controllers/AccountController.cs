@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Contracts;
 using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 
@@ -36,7 +37,7 @@ namespace Api.Controllers
                 throw;
             }
         }
-
+        
         [HttpGet("user/details")]
         public async Task<IActionResult> Details()
         {

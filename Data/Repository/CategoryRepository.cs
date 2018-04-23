@@ -6,6 +6,7 @@ using Contracts;
 using Core;
 using Entities;
 using Entities.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ViewModels;
 
@@ -13,9 +14,17 @@ namespace Repository
 {
     public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
     {
+        private readonly UserManager<User> _userManager;
+
         public CategoryRepository(AppDbContext appDbContext)
             : base(appDbContext)
         {
+        }
+
+        public CategoryRepository(AppDbContext appDbContext, UserManager<User> userManager)
+            : base(appDbContext)
+        {
+            _userManager = userManager;
         }
 
         public async Task<ResponseObject<object>> GetCategoryList(string userId)
@@ -23,21 +32,47 @@ namespace Repository
             var response = new ResponseObject<object>();
             try
             {
-                var companyAccount = await AppDbContext.CompanyAccount
+                var user = await AppDbContext.Users.FirstOrDefaultAsync(a => a.Id == userId);
+
+                if (user == null)
+                {
+                    response.Success = false;
+                    response.StatusCode = StatusCode.BadRequest;
+                    response.Message = "Can't find user!";
+                    return response;
+                }
+
+                var role = await _userManager.GetRolesAsync(user);
+
+                List<Category> categories = new List<Category>();
+
+                if (role.Contains("SuperAdmin") || role.Contains("User"))
+                {
+                    categories = AppDbContext.Categories.OrderBy(a => a.Name).ToList();
+                }
+
+                if (role.Contains("CompanyAdmin"))
+                {
+                    var companyAccount = await AppDbContext.CompanyAccount
                                             .Include(a => a.Company)
                                                 .ThenInclude(a => a.Categories)
                                                     .FirstOrDefaultAsync(a => a.UserId == userId);
 
-                if (companyAccount == null)
-                {
-                    response.Success = false;
-                    response.Message = "Can't find logged in company!";
-                    return response;
+                    if (companyAccount == null)
+                    {
+                        response.Success = false;
+                        response.Message = "Can't find logged in company!";
+                        return response;
+                    }
+
+                    categories = companyAccount.Company.Categories.OrderBy(a => a.Name).ToList();
                 }
+
+                
 
                 var categoryListViewModel = new List<CategoryViewModel>();
 
-                foreach (var category in companyAccount.Company.Categories.OrderBy(a=>a.Name))
+                foreach (var category in categories)
                 {
                     var categoryViewModel = new CategoryViewModel
                     {
@@ -54,8 +89,10 @@ namespace Repository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                response.Message = e.Message;
+                response.Success = false;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
         }
 
@@ -99,6 +136,8 @@ namespace Repository
             {
                 response.Message = e.Message;
                 response.Success = false;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
 
             return response;
@@ -138,6 +177,8 @@ namespace Repository
             {
                 response.Message = e.Message;
                 response.Success = false;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
 
             return response;
@@ -146,6 +187,7 @@ namespace Repository
         public async Task<ResponseObject<object>> DeleteCategory(string categoryId)
         {
             var response = new ResponseObject<object>();
+
             try
             {
                 var category = await AppDbContext.Categories.FirstOrDefaultAsync(a => a.CategoryId == categoryId);
@@ -168,6 +210,7 @@ namespace Repository
                 };
 
                 response.Data = categoryVm;
+                response.StatusCode = StatusCode.Ok;
                 response.Message = "Category successfully deleted!";
 
             }
@@ -175,6 +218,8 @@ namespace Repository
             {
                 response.Message = e.Message;
                 response.Success = false;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
             }
 
             return response;

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Contracts;
 using Core;
 using Microsoft.AspNetCore.Mvc;
@@ -18,39 +19,80 @@ namespace Api.Controllers
         }
 
         [HttpGet("category/list")]
-        public Task<ResponseObject<object>> GetCategories()
+        public async Task<IActionResult> GetCategories()
         {
-            var userId = GetUserIdFromToken();
+            try
+            {
+                var userId = GetUserIdFromToken();
 
-            var result = _repositoryWrapper.Category.GetCategoryList(userId);
+                var result = await _repositoryWrapper.Category.GetCategoryList(userId);
 
-            return result;
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
 
         [HttpPost("category/add")]
-        public Task<ResponseObject<object>> AddCategory([FromBody] CategoryViewModel category)
+        public async Task<IActionResult> AddCategory([FromBody] CategoryViewModel category)
         {
-            var userId = GetUserIdFromToken();
+            try
+            {
+                var userId = GetUserIdFromToken();
 
-            var result = _repositoryWrapper.Category.AddCategory(userId, category);
+                var result = await _repositoryWrapper.Category.AddCategory(userId, category);
 
-            return result;
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
         [HttpPut("category/update")]
-        public Task<ResponseObject<object>> UpdateCategory([FromBody] CategoryViewModel category)
+        public async Task<IActionResult> UpdateCategory([FromBody] CategoryViewModel category)
         {
-            var result = _repositoryWrapper.Category.UpdateCategory(category);
+            try
+            {
+                var result = await _repositoryWrapper.Category.UpdateCategory(category);
 
-            return result;
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         [HttpDelete("category/delete/{categoryId}")]
-        public Task<ResponseObject<object>> DeleteCategory(string categoryId)
+        public async Task<IActionResult> DeleteCategory(string categoryId)
         {
-            var result = _repositoryWrapper.Category.DeleteCategory(categoryId);
+            try
+            {
+                var result = await _repositoryWrapper.Category.DeleteCategory(categoryId);
 
-            return result;
+                if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
     }

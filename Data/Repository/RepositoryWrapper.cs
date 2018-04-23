@@ -17,7 +17,7 @@ namespace Repository
 
         public RepositoryWrapper(AppDbContext repositoryContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
         {
-            this.Category = new CategoryRepository(repositoryContext);
+            this.Category = new CategoryRepository(repositoryContext, userManager);
             this.Account = new AccountRepository(repositoryContext, userManager, jwtFactory, jwtOptions);
             this.Users = new UsersRepository(repositoryContext, userManager);
             this.Items = new ItemRepository(repositoryContext);

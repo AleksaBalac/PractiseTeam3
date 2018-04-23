@@ -39,7 +39,7 @@ namespace Api
 
             services.ConfigureRepositoryWrapper();
             
-            //services.AddTransient<SeedData>();
+            services.AddTransient<SeedData>();
 
             services.AddMvc();
         }
@@ -52,7 +52,7 @@ namespace Api
                 app.UseDeveloperExceptionPage();
             }
             
-            //seedData.SeedAdminUserAsync();
+            seedData.SeedAdminUserAsync();
             
             app.UseCors("CorsPolicy");
 

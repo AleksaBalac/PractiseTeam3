@@ -76,17 +76,17 @@ namespace Repository
             var response = new ResponseObject<object>();
             try
             {
-                CompanyAccount companyAccount = AppDbContext.CompanyAccount.Include(a => a.Company).ThenInclude(a => a.Categories)
-                    .ThenInclude(a => a.Items).FirstOrDefault(a => a.UserId == userId);
+                //CompanyAccount companyAccount = AppDbContext.CompanyAccount.Include(a => a.Company).ThenInclude(a => a.Categories)
+                //    .ThenInclude(a => a.Items).FirstOrDefault(a => a.UserId == userId);
 
-                if (companyAccount == null)
-                {
-                    response.Success = false;
-                    response.Message = "Can't find logged in company";
-                    return response;
-                }
+                //if (companyAccount == null)
+                //{
+                //    response.Success = false;
+                //    response.Message = "Can't find logged in company";
+                //    return response;
+                //}
 
-                Category category = companyAccount.Company.Categories.FirstOrDefault(a => a.CategoryId == categoryId);
+                Category category = AppDbContext.Categories.Include(a=>a.Items).FirstOrDefault(a => a.CategoryId == categoryId);
 
                 if (category == null)
                 {
