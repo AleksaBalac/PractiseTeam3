@@ -1,34 +1,4 @@
-.example-container {
-  display: flex;
-  flex-direction: column;
-  min-width: 300px;
-}
 
-.example-container .example-header {
-  min-height: 64px;
-  padding: 8px 24px 0;
-}
-
-.mat-column-select {
-  overflow: visible;
-}
-
-example-container .mat-form-field {
-  font-size: 14px;
-  width: 100%;
-}
-
-.filter {
-  margin-left:30px;
-}
-
-.mat-header-cell.mat-sort-header-sorted {
-  color: black;
-}
-
-button.pull-right {
-  margin-top:7px;
-}
 
 mat-cell {
   white-space: nowrap;

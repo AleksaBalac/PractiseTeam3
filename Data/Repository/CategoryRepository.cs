@@ -67,9 +67,7 @@ namespace Repository
 
                     categories = companyAccount.Company.Categories.OrderBy(a => a.Name).ToList();
                 }
-
                 
-
                 var categoryListViewModel = new List<CategoryViewModel>();
 
                 foreach (var category in categories)
@@ -154,6 +152,7 @@ namespace Repository
                 {
                     response.Message = "Can't find logged category";
                     response.Success = false;
+                    response.StatusCode = StatusCode.BadRequest;
                     return response;
                 }
 

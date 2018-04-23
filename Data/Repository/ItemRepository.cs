@@ -71,7 +71,7 @@ namespace Repository
             return response;
         }
 
-        public ResponseObject<object> GetItems(string userId, string categoryId)
+        public async Task<ResponseObject<object>> GetItems(string userId, string categoryId)
         {
             var response = new ResponseObject<object>();
             try
@@ -86,7 +86,7 @@ namespace Repository
                 //    return response;
                 //}
 
-                Category category = AppDbContext.Categories.Include(a=>a.Items).FirstOrDefault(a => a.CategoryId == categoryId);
+                Category category = await AppDbContext.Categories.Include(a=>a.Items).FirstOrDefaultAsync(a => a.CategoryId == categoryId);
 
                 if (category == null)
                 {

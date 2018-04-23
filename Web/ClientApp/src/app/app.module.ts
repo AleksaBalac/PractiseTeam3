@@ -18,6 +18,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { CompaniesComponent } from './components/companies/companies.component';
 import { UsersComponent } from './components/users/users.component';
 import { ItemsComponent } from './components/items/items.component';
+import { CompanyModalComponent } from './components/companies/modal/company.modal.component';
 
 //modals
 import { UserModalComponent } from './components/users/modal/user.modal.component';
@@ -38,6 +39,9 @@ import { UsersService } from './services/users.service';
 import { ItemService } from './services/item.service';
 import { CategoryService } from './services/category.service';
 import { ExcelService } from './services/excel.service';
+import { CompanyService } from './services/company.service';
+
+
 
 
 @NgModule({
@@ -54,7 +58,8 @@ import { ExcelService } from './services/excel.service';
     ItemsComponent,
     ItemModalComponent,
     CategoryModalComponent,
-    CompaniesComponent
+    CompaniesComponent,
+    CompanyModalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -78,7 +83,8 @@ import { ExcelService } from './services/excel.service';
   entryComponents: [
     UserModalComponent,
     ItemModalComponent,
-    CategoryModalComponent
+    CategoryModalComponent,
+    CompanyModalComponent
   ],
   providers:
     [
@@ -87,6 +93,7 @@ import { ExcelService } from './services/excel.service';
       ItemService,
       CategoryService,
       ExcelService,
+      CompanyService,
       AuthGuard, {
         provide: XHRBackend,
         useClass: AuthenticateXHRBackend
