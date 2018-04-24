@@ -3,6 +3,7 @@ using Core.JWT;
 using Entities;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Repository
@@ -15,13 +16,13 @@ namespace Repository
         public IItemRepository Items { get; set; }
         public ICompanyRepository Company { get; set; }
 
-        public RepositoryWrapper(AppDbContext repositoryContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
+        public RepositoryWrapper(AppDbContext repositoryContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions,IConfiguration configuration)
         {
             this.Category = new CategoryRepository(repositoryContext, userManager);
-            this.Account = new AccountRepository(repositoryContext, userManager, jwtFactory, jwtOptions);
+            this.Account = new AccountRepository(repositoryContext, userManager, jwtFactory, jwtOptions, configuration);
             this.Users = new UsersRepository(repositoryContext, userManager);
             this.Items = new ItemRepository(repositoryContext);
-            this.Company = new CompanyRepository(repositoryContext);
+            this.Company = new CompanyRepository(repositoryContext, userManager);
         }
     }
 }

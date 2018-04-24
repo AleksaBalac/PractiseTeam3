@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using Contracts;
 using Core;
 using Core.JWT;
@@ -10,6 +13,7 @@ using Entities;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,17 +25,23 @@ namespace Repository
     {
         private readonly UserManager<User> _userManager;
         private readonly IJwtFactory _jwtFactory;
+        private readonly IConfiguration _configuration;
         private readonly JwtIssuerOptions _jwtOptions;
 
         public AccountRepository(AppDbContext appDbContext) : base(appDbContext)
         {
         }
 
-        public AccountRepository(AppDbContext appDbContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
+        public AccountRepository(AppDbContext appDbContext,
+            UserManager<User> userManager,
+            IJwtFactory jwtFactory,
+            IOptions<JwtIssuerOptions> jwtOptions,
+            IConfiguration configuration)
             : base(appDbContext)
         {
             _userManager = userManager;
             _jwtFactory = jwtFactory;
+            _configuration = configuration;
             _jwtOptions = jwtOptions.Value;
         }
 
@@ -54,7 +64,7 @@ namespace Repository
                 //return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid username or password.", ModelState));
                 result.Data = null;
                 result.StatusCode = StatusCode.Unauthorized;
-                result.Message = "Can't find user!";
+                result.Message = "You must confirm your registration!";
                 return result;
             }
 
@@ -134,29 +144,33 @@ namespace Repository
                     LastName = registrationViewModel.LastName,
                     Email = registrationViewModel.Email,
                     UserName = registrationViewModel.Email,
-                    EmailConfirmed = true
+                    EmailConfirmed = false
                 };
 
-                var company = new Company
-                {
-                    Name = registrationViewModel.Name,
-                    CompanyId = Guid.NewGuid().ToString()
-                };
+                //var company = new Company
+                //{
+                //    Name = registrationViewModel.Name,
+                //    CompanyId = Guid.NewGuid().ToString()
+                //};
 
-                var companyAccount = new CompanyAccount
-                {
-                    CompanyAccountId = Guid.NewGuid().ToString(),
-                    CompanyId = company.CompanyId,
-                    UserId = user.Id
-                };
-
+                //var companyAccount = new CompanyAccount
+                //{
+                //    CompanyAccountId = Guid.NewGuid().ToString(),
+                //    CompanyId = company.CompanyId,
+                //    UserId = user.Id
+                //};
+                
                 var result = await _userManager.CreateAsync(user, registrationViewModel.Password);
-                if (result.Succeeded) AccountConfirm(user);
+                if (result.Succeeded)
+                {
+                    AccountConfirm(user);
+                }
 
-                var role = _userManager.AddToRoleAsync(user, "CompanyAdmin");
+                //var role = _userManager.AddToRoleAsync(user, "CompanyAdmin");
+                var role = _userManager.AddToRoleAsync(user, "User");
 
-                await AppDbContext.Companies.AddAsync(company);
-                await AppDbContext.CompanyAccount.AddAsync(companyAccount);
+                //await AppDbContext.Companies.AddAsync(company);
+                //await AppDbContext.CompanyAccount.AddAsync(companyAccount);
                 await AppDbContext.SaveChangesAsync();
 
                 response.Data = null;
@@ -171,29 +185,41 @@ namespace Repository
                 response.Message = e.Message;
                 response.StatusCode = StatusCode.BadRequest;
                 return response;
-            }            
+            }
         }
 
-        private async void AccountConfirm(User user)
+        public async Task<ResponseObject<object>> VerifyUserEmail(string userId, string code)
         {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var response = new ResponseObject<object>();
 
-            AppDomain root = AppDomain.CurrentDomain;
+            try
+            {
+                if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
+                {
+                    response.Message = "Invalid attempt!";
+                    response.StatusCode = StatusCode.BadRequest;
+                    return response;
+                }
 
-            var callbackUrl = $"{root}/api/account/userId=${user.Id}&code=${code}";
+                var user = await _userManager.FindByIdAsync(userId);
 
-            //var callbackUrl = Url.Action(
-            //    "ConfirmEmail", "Account",
-            //    new { userId = user.Id, code = code },
-            //    protocol: Request.Url.Scheme);
+                var result = await _userManager.ConfirmEmailAsync(user, code);
 
+                if (result.Succeeded)
+                {
+                    response.StatusCode = StatusCode.Ok;
+                    response.Success = true;
+                }
 
+                return response;
+            }
 
-            //await _userManager.SendEmailAsync(user.Id,
-            //    "Confirm your account",
-            //    "Please confirm your account by clicking this link: <a href=\""
-            //    + callbackUrl + "\">link</a>");
-            // ViewBag.Link = callbackUrl;   // Used only for initial demo.
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
+            }
         }
 
         #region private methods
@@ -207,6 +233,10 @@ namespace Repository
 
             if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
 
+            //check if email is confirmed
+            var isConfirmed = await _userManager.IsEmailConfirmedAsync(userToVerify);
+            if (!isConfirmed) return await Task.FromResult<ClaimsIdentity>(null);
+
             // check the credentials
             if (await _userManager.CheckPasswordAsync(userToVerify, password))
             {
@@ -215,6 +245,22 @@ namespace Repository
 
             // Credentials are invalid, or account doesn't exist
             return await Task.FromResult<ClaimsIdentity>(null);
+        }
+
+        private async void AccountConfirm(User user)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            code = HttpUtility.UrlEncode(code);
+
+            var root = _configuration.GetValue<string>("DomainUrl:Api");
+
+            var callbackUrl = $"{root}api/account?userId={user.Id}&code={code}";
+
+            var messageBody = "Please confirm your account by clicking this link: <a href=\""
+                + callbackUrl + "\">link</a>";
+
+            await EmailService.SendEmail(user.Email, "Registration", messageBody);
         }
         #endregion
     }

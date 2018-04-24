@@ -1,3 +1,79 @@
-<h1>
-  company modal works!
-</h1>
+<form class="form" [formGroup]="companyForm">
+
+  <mat-form-field class="full-width">
+
+    <input matInput placeholder="Name" [(ngModel)]="company.name" name="name" formControlName="name">
+    <mat-error *ngIf="companyForm.controls.name.invalid">
+      Please enter a name
+    </mat-error>
+
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+
+    <input matInput placeholder="Address" [(ngModel)]="company.address" name="address" formControlName="address">
+    <mat-error *ngIf="companyForm.controls.address.invalid">
+      Please enter a address
+    </mat-error>
+
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+
+    <input matInput placeholder="Contact person" [(ngModel)]="company.contactPerson" name="contactPerson" formControlName="contactPerson">
+    <mat-error *ngIf="companyForm.controls.contactPerson.invalid">
+      Please enter a Contact person
+    </mat-error>
+
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+
+    <input matInput [matDatepicker]="picker" placeholder="Valid licence" [(ngModel)]="company.validLicenceTill" name="validLicenceTill" formControlName="validLicenceTill">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+
+    <mat-error *ngIf="companyForm.controls.validLicenceTill.invalid">
+      Please enter a licence
+    </mat-error>
+
+  </mat-form-field>
+
+  <div *ngIf="hideAdministrator">
+
+    <h3>Add administrator</h3>
+
+    <mat-form-field class="full-width">
+
+      <input matInput placeholder="First name" [(ngModel)]="company.companyAdmin.firstName" name="firstName" formControlName="firstName">
+      <!--<mat-error *ngIf="companyForm.controls.firstName.invalid">
+        Please enter a name
+      </mat-error>-->
+
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+
+      <input matInput placeholder="Last Name" [(ngModel)]="company.companyAdmin.lastName" name="lastName" formControlName="lastName">
+      <!--<mat-error *ngIf="companyForm.controls.lastName.invalid">
+        Please enter a name
+      </mat-error>-->
+
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+
+      <input matInput placeholder="Email" [(ngModel)]="company.companyAdmin.email" name="email" formControlName="email">
+      <!--<mat-error *ngIf="companyForm.controls.email.invalid">
+        Please enter a name
+      </mat-error>-->
+
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="onSave()">Save</button>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+  </div>
+
+</form>

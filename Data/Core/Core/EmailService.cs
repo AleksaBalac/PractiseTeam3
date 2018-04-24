@@ -1,40 +1,34 @@
 ﻿using System;
-using System.Net;
-using System.Net.Mail;
+using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace Core
 {
-    public class EmailService
+    public static class EmailService
     {
-        public static void SendEmail(object sender, EventArgs e)
+        public static async Task SendEmail(string emailTo, string subject, string messageBody)
         {
-            try
+            var message = new MimeMessage();
+
+            message.From.Add(new MailboxAddress("PractiseTeam3", "aleksadeveloper@gmail.com"));
+            message.To.Add(new MailboxAddress("electro", "electrodance@hotmail.rs"));
+            message.Subject = "Registration";
+            message.Body = new TextPart("plain")
             {
-                NetworkCredential basicCredential =
-                    new NetworkCredential("aleksabalac@hotmail.com", "5CF4iFGQ8RPqg");
+                Text = messageBody
+            };
 
-                MailMessage mailMessage = new MailMessage();
-                mailMessage.To.Add("electrodance@outlook.com");
-                mailMessage.From = new MailAddress("info@aleksab.com");
-                mailMessage.Priority = MailPriority.High;
-
-                mailMessage.Subject = "ASP.NET e-mail test";
-                mailMessage.Body = "Hello world!";
-
-                SmtpClient smtpClient = new SmtpClient();
-                smtpClient.Host = "smtp-pulse.com";
-                smtpClient.EnableSsl = false;
-                smtpClient.Port = 2525;
-                smtpClient.Credentials = basicCredential;
-
-                smtpClient.Send(mailMessage);
-                //Response.Write("E-mail sent!");
-            }
-            catch (Exception ex)
+            using (var client = new SmtpClient())
             {
-                Console.WriteLine(ex);
-                //Response.Write("Could not send the e-mail - error: " + ex.Message);
+                await client.ConnectAsync("smtp.gmail.com", 587, false);
+                await client.AuthenticateAsync("aleksadeveloper@gmail.com", "d3v3l0per!espnet");
+                
+                await client.SendAsync(message);
+
+                await client.DisconnectAsync(true);
             }
+
         }
     }
 }

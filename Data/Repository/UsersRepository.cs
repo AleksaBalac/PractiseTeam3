@@ -66,7 +66,7 @@ namespace Repository
                 {
                     if (user.Id == userId) continue;//skip logged in user
 
-                    Task<IList<string>> role = _userManager.GetRolesAsync(user);
+                    IList<string> role = await _userManager.GetRolesAsync(user);
 
                     var userViewModel = new UsersViewModel
                     {
@@ -74,7 +74,7 @@ namespace Repository
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         Email = user.Email,
-                        Role = role.Result[0]
+                        Role = role.Count != 0 ? role[0] : ""
                     };
 
                     usersViewModel.Add(userViewModel);
@@ -181,7 +181,7 @@ namespace Repository
                 if (userRole.Contains("SuperAdmin"))
                 {
                     roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("SuperAdmin")));
-                    roles.Add(dbRoles.FirstOrDefault(a=>a.Name.Contains("CompanyAdmin")));
+                    roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("CompanyAdmin")));
                     roles.Add(dbRoles.FirstOrDefault(a => a.Name.Contains("User")));
                 }
 

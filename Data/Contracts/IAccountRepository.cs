@@ -9,5 +9,6 @@ namespace Contracts
         Task<ResponseObject<object>> Login(LoginViewModel loginViewModel);
         Task<ResponseObject<object>> GetUserDetails(string token);
         Task<ResponseObject<object>> Register(RegistrationViewModel registrationViewModel);
+        Task<ResponseObject<object>> VerifyUserEmail(string userId, string code);
     }
 }

@@ -9,6 +9,7 @@ import { CompanyModalComponent } from './modal/company.modal.component';
   templateUrl: './companies.component.html',
   styleUrls: ['./companies.component.css']
 })
+
 export class CompaniesComponent implements OnInit {
   companies: Company[];
 
@@ -20,6 +21,7 @@ export class CompaniesComponent implements OnInit {
   constructor(private companyService: CompanyService, public dialog: MatDialog, ) { }
 
   ngOnInit() {
+    this.getCompanies();
   }
 
   ngAfterViewInit() {
@@ -36,10 +38,16 @@ export class CompaniesComponent implements OnInit {
       if (result != undefined && result !== 'undo') {
 
       } else {
-
+        this.getCompanies();
       }
 
     });
   }
 
+  getCompanies() {
+    this.companyService.getCompanies().subscribe((res: any) => {
+      this.companies = res.data;
+      this.dataSource.data = this.companies;
+    });
+  }
 }

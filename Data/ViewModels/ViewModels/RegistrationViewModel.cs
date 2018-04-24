@@ -15,8 +15,8 @@ namespace ViewModels
         [Required]
         [MaxLength(20)]
         public string LastName { get; set; }
-        [Required]
-        [MaxLength(20)]
-        public string Name { get; set; }
+        //[Required]
+        //[MaxLength(20)]
+        //public string Name { get; set; }
     }
 }
