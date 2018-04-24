@@ -32,8 +32,7 @@ namespace Core
             }
             catch (Exception ex)
             {
-                var a = "string";
-
+                Console.WriteLine(ex);
                 //Response.Write("Could not send the e-mail - error: " + ex.Message);
             }
         }
