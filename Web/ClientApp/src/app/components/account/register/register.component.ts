@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from './../../../services/account.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-register',
@@ -35,13 +36,27 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    private router: Router) { }
+    private router: Router,
+    public snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
 
   onRegister() {
-    this.accountService.register(this.user);
+    this.accountService.register(this.user).subscribe((res: any) => {
+        console.log(res);
+        //return this.router.navigate(['/login']);
+      this.openSnackBar(res.message, 'Close');
+      this.user = {};
+    }, error => {
+        this.openSnackBar(error.error.message, 'Close');
+      });
+  }
+
+  public openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 4000,
+    });
   }
 
 }

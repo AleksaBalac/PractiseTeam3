@@ -257,7 +257,7 @@ namespace Repository
 
             var callbackUrl = $"{root}api/account?userId={user.Id}&code={code}";
 
-            var messageBody = "Please confirm your account by clicking this link: <a href=\""
+            var messageBody = "Please confirm your account by clicking this: <a href=\""
                 + callbackUrl + "\">link</a>";
 
             await EmailService.SendEmail(user.Email, "Registration", messageBody);

@@ -73,12 +73,6 @@ export class AccountService extends ServiceHelper {
   }
 
   register(user: any) {
-    return this.http.post(this.apiAddress + '/register', user, this.generateHeaders())
-      .subscribe((res: any) => {
-        console.log(res);
-        return this.router.navigate(['/login']);
-      }, error => {
-        this.openSnackBar(error.error.message, 'Close');
-      });
+    return this.http.post(this.apiAddress + '/register', user, this.generateHeaders());
   }
 }

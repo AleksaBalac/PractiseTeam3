@@ -10,6 +10,11 @@
    
     <form class="example-form" [formGroup]="loginForm">
 
+      <div *ngIf="isSuccess" class="alert alert-success">
+        <p>Your account is now active</p>
+        <p>Login with your email and password</p>
+      </div>
+
       <mat-form-field class="example-full-width">
         <input matInput placeholder="Email" [(ngModel)]="user.email" name="email" formControlName="email">
         <mat-error *ngIf="loginForm.controls.email.invalid">

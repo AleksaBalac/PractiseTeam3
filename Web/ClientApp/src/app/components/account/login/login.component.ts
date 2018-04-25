@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from './../../../services/account.service';
 import { MatSnackBar } from '@angular/material';
 
@@ -15,21 +15,32 @@ import { MatSnackBar } from '@angular/material';
 export class LoginComponent implements OnInit {
   user: any = {};
   loginForm: FormGroup;
+  isSuccess: boolean = false;
 
   constructor(
     private accountService: AccountService,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private snackBar: MatSnackBar) { }
 
 
   ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(4)]],
-    });
+    this.createForm();
+    this.getRouteParam();
   }
 
+  getRouteParam() {
+    const param = this.activatedRoute.snapshot.queryParams["isSuccess"];
+    if (param) this.isSuccess = true;
+  }
+
+  createForm() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+    });
+  }
 
   onLogin() {
     if (!this.loginForm.valid) {
