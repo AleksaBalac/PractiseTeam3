@@ -32,6 +32,7 @@ namespace Repository
                 {
                     InventoryItemId = Guid.NewGuid().ToString(),
                     BarCode = Guid.NewGuid().ToString(),
+                    Name = itemViewModel.Name,
                     CategoryId = categoryId,
                     Description = itemViewModel.Description,
                     Value = itemViewModel.Value,
@@ -44,6 +45,7 @@ namespace Repository
                 var itemVm = new ItemViewModel
                 {
                     InventoryItemId = item.InventoryItemId,
+                    Name = item.Name,
                     BarCode = item.BarCode,
                     CategoryId = item.CategoryId,
                     Description = item.Description,
@@ -65,10 +67,10 @@ namespace Repository
             catch (Exception e)
             {
                 response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
                 response.Success = false;
+                return response;
             }
-
-            return response;
         }
 
         public async Task<ResponseObject<object>> GetItems(string userId, string categoryId)
@@ -86,11 +88,12 @@ namespace Repository
                 //    return response;
                 //}
 
-                Category category = await AppDbContext.Categories.Include(a=>a.Items).FirstOrDefaultAsync(a => a.CategoryId == categoryId);
+                Category category = await AppDbContext.Categories.Include(a => a.Items).FirstOrDefaultAsync(a => a.CategoryId == categoryId);
 
                 if (category == null)
                 {
                     response.Success = false;
+                    response.StatusCode = StatusCode.BadRequest;
                     response.Message = "Can't find category";
                     return response;
                 }
@@ -107,12 +110,13 @@ namespace Repository
 
                     var itemViewModel = new ItemViewModel
                     {
+                        InventoryItemId = inventoryItem.InventoryItemId,
+                        Name = inventoryItem.Name,
                         Category = categoryViewModel,
                         Value = inventoryItem.Value,
                         CategoryId = inventoryItem.CategoryId,
                         BarCode = inventoryItem.BarCode,
                         Description = inventoryItem.Description,
-                        InventoryItemId = inventoryItem.InventoryItemId,
                         OrderNumber = inventoryItem.OrderNumber
                     };
 
@@ -125,8 +129,10 @@ namespace Repository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
+                response.Success = false;
+                return response;
             }
         }
 
@@ -137,7 +143,7 @@ namespace Repository
             try
             {
                 var item = await AppDbContext.InventoryItems
-                                .Include(a=>a.Category)
+                                .Include(a => a.Category)
                                     .FirstOrDefaultAsync(a => a.InventoryItemId == itemViewModel.InventoryItemId);
 
                 if (item == null)
@@ -146,7 +152,8 @@ namespace Repository
                     response.Success = false;
                     return response;
                 }
-                
+
+                item.Name = itemViewModel.Name;
                 item.Value = itemViewModel.Value;
                 item.BarCode = itemViewModel.BarCode;
                 item.Description = itemViewModel.Description;
@@ -154,14 +161,15 @@ namespace Repository
 
                 AppDbContext.InventoryItems.Update(item);
                 await AppDbContext.SaveChangesAsync();
-                
+
 
                 var itemVm = new ItemViewModel
                 {
+                    InventoryItemId = item.InventoryItemId,
+                    Name = item.Name,
                     BarCode = item.BarCode,
                     CategoryId = item.CategoryId,
                     Description = item.Description,
-                    InventoryItemId = item.InventoryItemId,
                     OrderNumber = item.OrderNumber,
                     Value = item.Value,
                     Category = new CategoryViewModel
@@ -170,7 +178,7 @@ namespace Repository
                         CategoryId = item.Category.CategoryId
                     }
                 };
-                
+
                 response.Data = itemVm;
                 response.Success = true;
                 response.Message = "Item is successfully updated!";
@@ -178,7 +186,9 @@ namespace Repository
             catch (Exception e)
             {
                 response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
                 response.Success = false;
+                return response;
             }
 
             return response;
@@ -209,7 +219,9 @@ namespace Repository
             catch (Exception e)
             {
                 response.Message = e.Message;
+                response.StatusCode = StatusCode.BadRequest;
                 response.Success = false;
+                return response;
             }
 
             return response;

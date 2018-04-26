@@ -23,7 +23,7 @@ export class ItemsComponent implements OnInit {
 
   selectedOption: string;
 
-  displayedColumns = ['select', 'orderNumber', 'value', 'description', 'barCode', 'action'];
+  displayedColumns = ['select', 'name', 'orderNumber', 'value', 'description', 'barCode', 'action'];
   dataSource = new MatTableDataSource<Item>(this.items);
   selection = new SelectionModel<Item>(true, []);
 
@@ -50,6 +50,7 @@ export class ItemsComponent implements OnInit {
   }
 
   openItemModal(item: Item) {
+    
     let dialogRef = this.dialog.open(ItemModalComponent, {
       width: '30%',
       data: { 'categories': this.categories, 'item': item }
@@ -61,7 +62,8 @@ export class ItemsComponent implements OnInit {
           this.items.splice(this.items.indexOf(item), 1);
           this.dataSource.data = this.items;
         }
-        else if (item.inventoryItemId === result.inventoryItemId) {
+        else if (item != null && item.inventoryItemId === result.inventoryItemId) {
+          item = result;
           this.dataSource.data = this.items;
         }
         else {
@@ -124,7 +126,7 @@ export class ItemsComponent implements OnInit {
   }
 
   onExportToExcel() {
-    
+
     this.excelService.exportAsExcelFile(this.selection.selected.sort(), 'InventoryItems');
   }
 
