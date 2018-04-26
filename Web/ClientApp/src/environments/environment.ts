@@ -6,5 +6,6 @@
 export const environment = {
   production: false,
   webAddress: 'http://localhost:5000',
-  apiAddress: 'http://localhost:5001/api'
+  apiAddress: 'http://localhost:5001/api',
+  //apiAddress: 'http://www.practiseteam3.com/api'
 };
