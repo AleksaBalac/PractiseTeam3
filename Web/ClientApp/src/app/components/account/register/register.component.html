@@ -1,51 +1,54 @@
 <mat-card class="register-card">
   <mat-card-header>
-  
+
     <mat-card-title>Register</mat-card-title>
     <mat-card-subtitle>Enter your information</mat-card-subtitle>
 
   </mat-card-header>
-  
+
   <mat-card-content>
-    <form class="example-form">
+
+    <form class="example-form" [formGroup]="registerForm">
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="First name" [(ngModel)]="user.FirstName" [formControl]="firstNameFormControl">
-        <mat-error *ngIf="firstNameFormControl.hasError('required')">
-          FirstName is <strong>required</strong>
+
+        <input matInput placeholder="First name" [(ngModel)]="user.firstName" name="firstName" formControlName="firstName">
+        <mat-error *ngIf="registerForm.controls.firstName.invalid">
+          First Name is <strong>required</strong>
         </mat-error>
+
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Last name" [(ngModel)]="user.LastName" [formControl]="lastNameFormControl">
-        <mat-error *ngIf="lastNameFormControl.hasError('required')">
-          LastName is <strong>required</strong>
+
+       <input matInput placeholder="Last name" [(ngModel)]="user.lastName" name="lastName" formControlName="lastName">
+        <mat-error *ngIf="registerForm.controls.lastName.invalid">
+          Last Name is <strong>required</strong>
         </mat-error>
+
       </mat-form-field>
 
-      <!--<mat-form-field class="example-full-width">
-        <input matInput placeholder="Company name" [(ngModel)]="user.Name" [formControl]="nameFormControl">
-        <mat-error *ngIf="nameFormControl.hasError('required')">
-          Name is <strong>required</strong>
-        </mat-error>
-      </mat-form-field>-->
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Email" [(ngModel)]="user.email" [formControl]="emailFormControl">
-        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+
+        <input matInput placeholder="Email" [(ngModel)]="user.email" name="email" formControlName="email">
+        <mat-error *ngIf="registerForm.controls.email.invalid">
           Please enter a valid email address
         </mat-error>
-        <mat-error *ngIf="emailFormControl.hasError('required')">
-          Email is <strong>required</strong>
-        </mat-error>
+
       </mat-form-field>
+
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Password" type="password" [(ngModel)]="user.password" [formControl]="passwordFormControl">
-        <mat-error *ngIf="passwordFormControl.hasError('required')">
+
+        <input matInput placeholder="Password" [(ngModel)]="user.password" name="password" formControlName="password">
+        <mat-error *ngIf="registerForm.controls.password.invalid">
           Password is <strong>required</strong>
         </mat-error>
+
       </mat-form-field>
+
     </form>
+
   </mat-card-content>
 
   <mat-card-actions>

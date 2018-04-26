@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AccountService } from './../../../services/account.service';
 import { MatSnackBar } from '@angular/material';
@@ -12,45 +12,43 @@ import { MatSnackBar } from '@angular/material';
 
 export class RegisterComponent implements OnInit {
   user: any = {};
+  registerForm: FormGroup;
 
-  firstNameFormControl = new FormControl('', [
-    Validators.required
-  ]);
-
-  lastNameFormControl = new FormControl('', [
-    Validators.required
-  ]);
-
-  nameFormControl = new FormControl('', [
-    Validators.required
-  ]);
-
-  emailFormControl = new FormControl('', [
-    Validators.required,
-    Validators.email
-  ]);
-
-  passwordFormControl = new FormControl('', [
-    Validators.required
-  ]);
 
   constructor(
     private accountService: AccountService,
     private router: Router,
+    private fb: FormBuilder,
     public snackBar: MatSnackBar) { }
 
   ngOnInit() {
+
+    this.createForm();
+
+  }
+
+  createForm() {
+    this.registerForm = this.fb.group({
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
+    });
   }
 
   onRegister() {
+    if (!this.registerForm.valid) {
+      return this.openSnackBar('You must provide required data', 'Close');
+    }
+
     this.accountService.register(this.user).subscribe((res: any) => {
-        console.log(res);
-        //return this.router.navigate(['/login']);
+      console.log(res);
+      //return this.router.navigate(['/login']);
       this.openSnackBar(res.message, 'Close');
       this.user = {};
     }, error => {
-        this.openSnackBar(error.error.message, 'Close');
-      });
+      this.openSnackBar(error.error.message, 'Close');
+    });
   }
 
   public openSnackBar(message: string, action: string) {
