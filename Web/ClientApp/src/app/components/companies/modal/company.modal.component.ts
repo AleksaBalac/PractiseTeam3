@@ -26,9 +26,6 @@ export class CompanyModalComponent extends ServiceHelper implements OnInit {
     private fb: FormBuilder, ) {
 
     super(snackBar);
-
-    this.createForm();
-
   }
 
   ngOnInit() {
@@ -36,8 +33,11 @@ export class CompanyModalComponent extends ServiceHelper implements OnInit {
       this.company = this.data.company;
       this.mode = 'edit';
       this.hideAdministrator = false;
+    } else {
+      this.mode = 'add';
+    }
 
-    } else this.mode = 'add';
+    this.createForm();
   }
 
   createForm() {
@@ -51,6 +51,7 @@ export class CompanyModalComponent extends ServiceHelper implements OnInit {
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.email]]
       });
+
     } else {
       this.companyForm = this.fb.group({
         name: ['', [Validators.required, Validators.maxLength(20)]],
@@ -59,8 +60,6 @@ export class CompanyModalComponent extends ServiceHelper implements OnInit {
         validLicenceTill: ['', [Validators.required]]
       });
     }
-
-
   }
 
   onSave() {
@@ -69,7 +68,6 @@ export class CompanyModalComponent extends ServiceHelper implements OnInit {
     }
 
     if (this.mode === 'add') {
-      console.log('add!!!');
       this.companyService.addCompany(this.company).subscribe((res: any) => {
         this.openSnackBar(res.message, 'Close');
         this.dialogRef.close(res.data);

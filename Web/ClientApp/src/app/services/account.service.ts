@@ -26,23 +26,7 @@ export class AccountService extends ServiceHelper {
   }
 
   login(user: any) {
-    return this.http.post(this.apiAddress + '/login', user, this.generateHeaders()).subscribe((res: any) => {
-
-      localStorage.setItem('auth_token', res.data.auth_token);
-      this.getUserDetails();
-      this.loggedIn = true;
-
-      this.openSnackBar(res.message, 'Close');
-      return this.router.navigate(['/dashboard']);
-
-    }, error => {
-      if (error.error == undefined || error.error.message == undefined) {
-        this.openSnackBar(error, 'Close');
-      } else {
-        this.openSnackBar(error.error.message, 'Close');
-
-      }
-    });
+    return this.http.post(this.apiAddress + '/login', user, this.generateHeaders());
   }
 
   isLoggedIn() {

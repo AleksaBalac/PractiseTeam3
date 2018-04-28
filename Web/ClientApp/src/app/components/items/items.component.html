@@ -64,7 +64,7 @@
     <!-- Value Column -->
     <ng-container matColumnDef="value">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Value </mat-header-cell>
-      <mat-cell *matCellDef="let item"> {{item.value}} </mat-cell>
+      <mat-cell *matCellDef="let item"> {{item.value | currency}} </mat-cell>
     </ng-container>
 
     <!-- Description Column -->

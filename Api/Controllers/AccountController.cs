@@ -4,6 +4,7 @@ using Contracts;
 using Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MimeKit.Text;
 using ViewModels;
 
@@ -13,10 +14,12 @@ namespace Api.Controllers
     public class AccountController : BaseController
     {
         private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(IRepositoryWrapper repositoryWrapper)
+        public AccountController(IRepositoryWrapper repositoryWrapper, IConfiguration configuration)
         {
             _repositoryWrapper = repositoryWrapper;
+            _configuration = configuration;
         }
 
 
@@ -90,13 +93,13 @@ namespace Api.Controllers
         {
             try
             {
-                //return Redirect("http://localhost:5000/users"); test
-
                 var result = await _repositoryWrapper.Account.VerifyUserEmail(userId, code);
 
                 if (result.StatusCode == Core.StatusCode.BadRequest) return BadRequest(result);
-                
-                return Redirect($"http://localhost:5000/login?isSuccess={result.Success}");
+
+                var callbackUrl = _configuration.GetSection("DomainUrl:Web").Value;
+
+                return Redirect($"{callbackUrl}login?isSuccess={result.Success}");
             }
             catch (Exception e)
             {

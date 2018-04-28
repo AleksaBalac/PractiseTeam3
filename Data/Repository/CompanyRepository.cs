@@ -45,7 +45,10 @@ namespace Repository
                     FirstName = companyViewModel.CompanyAdmin.FirstName,
                     LastName = companyViewModel.CompanyAdmin.LastName,
                     Email = companyViewModel.CompanyAdmin.Email,
-                    EmailConfirmed = false
+                    EmailConfirmed = true,
+                    NormalizedEmail = companyViewModel.CompanyAdmin.Email,
+                    UserName = companyViewModel.CompanyAdmin.Email,
+                    NormalizedUserName = companyViewModel.CompanyAdmin.Email
                 };
 
                 await _userManager.CreateAsync(user, "Pass1234");

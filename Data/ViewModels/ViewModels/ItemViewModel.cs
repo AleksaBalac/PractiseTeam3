@@ -10,7 +10,6 @@ namespace ViewModels
         public string Name { get; set; }
         public int OrderNumber { get; set; }
         [Required]
-        [MaxLength(20)]
         public decimal Value { get; set; }
         [Required]
         [MaxLength(300)]

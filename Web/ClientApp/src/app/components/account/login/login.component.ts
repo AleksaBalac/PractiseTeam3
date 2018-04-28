@@ -50,7 +50,24 @@ export class LoginComponent implements OnInit {
       return this.openSnackBar('You must provide required data', 'Close');
     }
 
-    this.accountService.login(this.user);
+    this.accountService.login(this.user).subscribe((res: any) => {
+
+      localStorage.setItem('auth_token', res.data.auth_token);
+      //this.user.getUserDetails();
+      //this.user.loggedIn = true;
+
+      this.openSnackBar(res.message, 'Close');
+      return this.router.navigate(['/dashboard']);
+
+    }, error => {
+      this.showSpinner = false;
+      console.log(error);
+      if (error.error == undefined || error.error.message == undefined) {
+        this.openSnackBar(error.message, 'Close');
+      } else {
+        this.openSnackBar(error.error.message, 'Close');
+      }
+    });
   }
 
   public openSnackBar(message: string, action: string) {

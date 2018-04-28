@@ -40,7 +40,7 @@
 
       <mat-form-field class="example-full-width">
 
-        <input matInput placeholder="Password" [(ngModel)]="user.password" name="password" formControlName="password">
+        <input matInput placeholder="Password" [(ngModel)]="user.password" name="password" type="password" formControlName="password">
         <mat-error *ngIf="registerForm.controls.password.invalid">
           Password is <strong>required</strong>
         </mat-error>

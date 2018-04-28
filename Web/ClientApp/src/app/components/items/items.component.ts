@@ -21,8 +21,6 @@ export class ItemsComponent implements OnInit {
   categories: Category[];
   category: Category;
 
-  selectedOption: string;
-
   displayedColumns = ['select', 'name', 'orderNumber', 'value', 'description', 'barCode', 'action'];
   dataSource = new MatTableDataSource<Item>(this.items);
   selection = new SelectionModel<Item>(true, []);
@@ -40,7 +38,6 @@ export class ItemsComponent implements OnInit {
   getCategories() {
     this.categoryService.getCategories().subscribe((res: any) => {
       this.categories = res.data;
-      this.selectedOption = this.categories[0].categoryId;
     });
   }
 
@@ -50,7 +47,7 @@ export class ItemsComponent implements OnInit {
   }
 
   openItemModal(item: Item) {
-    
+
     let dialogRef = this.dialog.open(ItemModalComponent, {
       width: '30%',
       data: { 'categories': this.categories, 'item': item }

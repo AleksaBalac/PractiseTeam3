@@ -46,6 +46,7 @@ export class RegisterComponent implements OnInit {
       //return this.router.navigate(['/login']);
       this.openSnackBar(res.message, 'Close');
       this.user = {};
+      this.registerForm.reset();
     }, error => {
       this.openSnackBar(error.error.message, 'Close');
     });
