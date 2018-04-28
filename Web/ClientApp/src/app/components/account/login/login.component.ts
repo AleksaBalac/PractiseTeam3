@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   user: any = {};
   loginForm: FormGroup;
   isSuccess: boolean = false;
+  showSpinner: boolean = false;
 
   constructor(
     private accountService: AccountService,
@@ -43,7 +44,9 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin() {
+    this.showSpinner = true;
     if (!this.loginForm.valid) {
+      this.showSpinner = false;
       return this.openSnackBar('You must provide required data', 'Close');
     }
 

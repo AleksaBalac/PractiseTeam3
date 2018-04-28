@@ -44,11 +44,15 @@ namespace Repository
                 {
                     FirstName = companyViewModel.CompanyAdmin.FirstName,
                     LastName = companyViewModel.CompanyAdmin.LastName,
-                    Email = companyViewModel.CompanyAdmin.Email
+                    Email = companyViewModel.CompanyAdmin.Email,
+                    EmailConfirmed = false
                 };
 
                 await _userManager.CreateAsync(user, "Pass1234");
                 await _userManager.AddToRoleAsync(user, "CompanyAdmin");
+
+                //send email to user
+                
 
                 CompanyAccount companyAccount = new CompanyAccount
                 {

@@ -4,20 +4,20 @@ import { MatSnackBar } from '@angular/material';
 
 export class ServiceHelper {
   public apiAddress: string = environment.apiAddress;
-  
+
   constructor(public snackBar: MatSnackBar) { }
 
   public generateHeadersWithToken() {
     let authToken = localStorage.getItem('auth_token');
 
     return {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `${authToken}` })
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `${authToken}`, 'Access-Control-Allow-Origin': '*' })
     }
   }
 
   public generateHeaders() {
     return {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' })
     }
   }
 

@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   webAddress: 'http://localhost:5000',
-  apiAddress: 'http://www.practiseteam-api.com/api'
+  apiAddress: 'http://188.2.214.126:85/api'
 };
