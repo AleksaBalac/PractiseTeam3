@@ -13,6 +13,8 @@ import { CompanyModalComponent } from './modal/company.modal.component';
 export class CompaniesComponent implements OnInit {
   companies: Company[];
 
+  showSpinner:boolean = true;
+
   displayedColumns = ['name', 'address', 'validLicenceTill', 'contactPerson', 'action'];
   dataSource = new MatTableDataSource<Company>(this.companies);
 
@@ -49,6 +51,7 @@ export class CompaniesComponent implements OnInit {
     this.companyService.getCompanies().subscribe((res: any) => {
       this.companies = res.data;
       this.dataSource.data = this.companies;
+      this.showSpinner = false;
     });
   }
 

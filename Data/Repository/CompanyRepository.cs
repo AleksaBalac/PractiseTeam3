@@ -177,6 +177,15 @@ namespace Repository
                     await _userManager.DeleteAsync(account.User);
                 }
 
+                var categories = await AppDbContext.Categories.Where(a => a.CompanyId == companyId).ToListAsync();
+
+                AppDbContext.Categories.RemoveRange(categories);
+
+                foreach (var category in categories)
+                {
+                    AppDbContext.InventoryItems.RemoveRange(category.Items.ToList());
+                }
+
                 AppDbContext.Companies.Remove(company);
 
                 await AppDbContext.SaveChangesAsync();

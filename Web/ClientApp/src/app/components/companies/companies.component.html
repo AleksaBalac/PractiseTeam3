@@ -1,6 +1,8 @@
 <h1>Companies</h1>
 
-<div class="example-container mat-elevation-z8">
+<mat-spinner *ngIf="showSpinner"></mat-spinner>
+
+<div *ngIf="!showSpinner" class="example-container mat-elevation-z8">
 
   <div class="example-header">
 

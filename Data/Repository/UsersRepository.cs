@@ -98,6 +98,11 @@ namespace Repository
             var response = new ResponseObject<object>();
             try
             {
+                // first check which role is selected
+                // super admin don't need to be stored to CompanyAccount
+                // company admin must compnay
+                // user ??
+
                 //find company
                 var company = AppDbContext.CompanyAccount
                             .Include(a => a.Company)

@@ -20,8 +20,9 @@ export class ItemsComponent implements OnInit {
   items: Item[];
   categories: Category[];
   category: Category;
+  showSpinner:boolean = true;
 
-  displayedColumns = ['select', 'name', 'orderNumber', 'value', 'description', 'barCode', 'action'];
+  displayedColumns = ['select', 'name', 'orderNumber', 'value', 'description', 'action'];
   dataSource = new MatTableDataSource<Item>(this.items);
   selection = new SelectionModel<Item>(true, []);
 
@@ -38,6 +39,7 @@ export class ItemsComponent implements OnInit {
   getCategories() {
     this.categoryService.getCategories().subscribe((res: any) => {
       this.categories = res.data;
+      this.showSpinner = false;
     });
   }
 
