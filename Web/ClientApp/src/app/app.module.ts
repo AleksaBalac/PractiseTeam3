@@ -40,6 +40,7 @@ import { ItemService } from './services/item.service';
 import { CategoryService } from './services/category.service';
 import { ExcelService } from './services/excel.service';
 import { CompanyService } from './services/company.service';
+import { DashboardService } from './services/dashboard.service';
 
 @NgModule({
   declarations: [
@@ -85,16 +86,17 @@ import { CompanyService } from './services/company.service';
   ],
   providers:
     [
+      AuthGuard, {
+        provide: XHRBackend,
+        useClass: AuthenticateXHRBackend
+      },
       AccountService,
       UsersService,
       ItemService,
       CategoryService,
       ExcelService,
       CompanyService,
-      AuthGuard, {
-        provide: XHRBackend,
-        useClass: AuthenticateXHRBackend
-      }
+      DashboardService
     ],
   bootstrap: [AppComponent]
 })

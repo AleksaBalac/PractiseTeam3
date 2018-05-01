@@ -15,14 +15,16 @@ namespace Repository
         public IUsersRepository Users { get; set; }
         public IItemRepository Items { get; set; }
         public ICompanyRepository Company { get; set; }
+        public IDashboardRepository Dashboard { get; set; }
 
-        public RepositoryWrapper(AppDbContext repositoryContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions,IConfiguration configuration)
+        public RepositoryWrapper(AppDbContext repositoryContext, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions, IConfiguration configuration)
         {
             this.Category = new CategoryRepository(repositoryContext, userManager);
             this.Account = new AccountRepository(repositoryContext, userManager, jwtFactory, jwtOptions, configuration);
             this.Users = new UsersRepository(repositoryContext, userManager);
             this.Items = new ItemRepository(repositoryContext);
             this.Company = new CompanyRepository(repositoryContext, userManager);
+            this.Dashboard = new DashboardRepository(repositoryContext, userManager);
         }
     }
 }

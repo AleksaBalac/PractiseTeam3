@@ -7,5 +7,6 @@
         IUsersRepository Users { get; set; }
         IItemRepository Items { get; set; }
         ICompanyRepository Company { get; set; }
+        IDashboardRepository Dashboard { get; set; }
     }
 }

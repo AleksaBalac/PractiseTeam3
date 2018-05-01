@@ -1,2 +1,14 @@
 <h1>Dashboard!</h1>
-{{userDetails | json}}
+
+<mat-spinner *ngIf="showSpinner"></mat-spinner>
+
+<div class="row" *ngIf="!showSpinner">
+  <div class="col-md-6 col-sm-6 col-xs-12" *ngIf="companyChart">
+    <h3>Company chart</h3>
+    <canvas id="companyChart"> {{ companyChart }}</canvas>
+  </div>
+  <div class="col-md-6 col-sm-6 col-xs-12" *ngIf="categoryChart">
+    <h3>Categories chart</h3>
+    <canvas id="categoryChart"> {{ categoryChart }}</canvas>
+  </div>
+</div>

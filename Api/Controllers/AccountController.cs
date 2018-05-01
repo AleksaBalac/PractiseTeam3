@@ -21,8 +21,7 @@ namespace Api.Controllers
             _repositoryWrapper = repositoryWrapper;
             _configuration = configuration;
         }
-
-
+        
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]LoginViewModel loginViewModel)
         {
@@ -86,7 +85,6 @@ namespace Api.Controllers
                 throw;
             }
         }
-
 
         [HttpGet("account")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)

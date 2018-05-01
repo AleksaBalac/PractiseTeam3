@@ -20,12 +20,11 @@ export class ItemsComponent implements OnInit {
   items: Item[];
   categories: Category[];
   category: Category;
-  showSpinner:boolean = true;
+  showSpinner: boolean = true;
 
   displayedColumns = ['select', 'name', 'orderNumber', 'value', 'description', 'action'];
   dataSource = new MatTableDataSource<Item>(this.items);
   selection = new SelectionModel<Item>(true, []);
-
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild((MatSort) as any) sort: MatSort;
@@ -125,8 +124,22 @@ export class ItemsComponent implements OnInit {
   }
 
   onExportToExcel() {
+    let list: any = [];
 
-    this.excelService.exportAsExcelFile(this.selection.selected.sort(), 'InventoryItems');
+    this.selection.selected.forEach(item => {
+      let inventoryItem: any = {
+        name: item.name,
+        description: item.description,
+        orderNumber: item.orderNumber,
+        value: item.value,
+        category:item.category.name
+      }
+
+      list.push(inventoryItem);
+    });
+
+    console.log(list);
+    this.excelService.exportAsExcelFile(list.sort(), 'InventoryItems');
   }
 
   public openSnackBar(message: string, action: string) {
