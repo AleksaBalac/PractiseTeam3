@@ -36,7 +36,9 @@ export class ItemModalComponent extends ServiceHelper implements OnInit {
     if (this.data.item != null) {
       this.item = this.data.item;
       this.mode = 'edit';
-    } else this.mode = 'add';
+    } else {
+      this.mode = 'add';
+    }
 
     this.createForm();
   }
@@ -58,7 +60,7 @@ export class ItemModalComponent extends ServiceHelper implements OnInit {
     if (this.mode === 'add') {
       this.itemService.addItem(this.item).subscribe((res: any) => {
         this.openSnackBar(res.message, 'Close');
-        this.dialogRef.close(res.data);
+        this.dialogRef.close(res);
       },
         error => {
           console.log(error);
@@ -66,7 +68,7 @@ export class ItemModalComponent extends ServiceHelper implements OnInit {
     } else {
       this.itemService.updateItem(this.item).subscribe((res: any) => {
         this.openSnackBar(res.message, 'Close');
-        this.dialogRef.close(res.data);
+        this.dialogRef.close(res);
       },
         error => {
           console.log(error);

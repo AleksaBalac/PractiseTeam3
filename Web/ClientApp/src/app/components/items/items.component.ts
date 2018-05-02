@@ -19,7 +19,7 @@ import { ExcelService } from '../../services/excel.service';
 export class ItemsComponent implements OnInit {
   items: Item[];
   categories: Category[];
-  category: Category;
+  category: string;
   showSpinner: boolean = true;
 
   displayedColumns = ['select', 'name', 'orderNumber', 'value', 'description', 'action'];
@@ -55,24 +55,35 @@ export class ItemsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined && result !== 'undo') {
-        if (item != null && item.category.categoryId !== result.category.categoryId) {
-          this.items.splice(this.items.indexOf(item), 1);
-          this.dataSource.data = this.items;
-        }
-        else if (item != null && item.inventoryItemId === result.inventoryItemId) {
-          item = result;
-          this.dataSource.data = this.items;
-        }
-        else {
-          this.items.unshift(result);
-          this.dataSource.data = this.items;
-        }
+      if (result !== 'undo' && result != undefined) {
+
+        this.updateItemRow(item == null ? 'add' : 'edit', result.data);
+
       } else {
         this.onCategoryChange(String(this.category));
       }
 
     });
+  }
+
+  updateItemRow(mode: string, item: Item) {
+    if (mode === 'add') {
+      if (item.category.categoryId === this.category) {
+        this.items.unshift(item);
+      } else {
+        this.openSnackBar(`Item is added in ${item.category.name}`, 'Close');
+      }
+    } else {
+      if (item.category.categoryId !== this.category) {
+        let originalItem = this.items.find(it => it.inventoryItemId === item.inventoryItemId);
+        let index = this.items.indexOf(originalItem);
+
+        this.items.splice(index, 1);
+        this.openSnackBar(`Item is moved to ${item.category.name}`, 'Close');
+      }
+    }
+
+    this.dataSource.data = this.items;
   }
 
   onCategoryChange(categoryId: string) {
@@ -132,13 +143,12 @@ export class ItemsComponent implements OnInit {
         description: item.description,
         orderNumber: item.orderNumber,
         value: item.value,
-        category:item.category.name
+        category: item.category.name
       }
 
       list.push(inventoryItem);
     });
 
-    console.log(list);
     this.excelService.exportAsExcelFile(list.sort(), 'InventoryItems');
   }
 
