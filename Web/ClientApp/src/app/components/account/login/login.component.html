@@ -11,9 +11,7 @@
     </mat-card-header>
 
     <mat-card-content>
-
-
-
+      
       <form class="example-form" [formGroup]="loginForm">
 
         <div *ngIf="isSuccess" class="alert alert-success">
@@ -49,13 +47,27 @@
 
     <p>Hint : </p>
     <ul>
-      <li>Company : companyuser1@hotmail.com Password: Pass1234</li>
-      <li>Super admnin : superadmin@hotmail.com Password: Pass1234</li>
+      <li>
+        Company user:
+        <ul>
+          <li>companyuser1@hotmail.com</li>
+          <li>Pass1234</li>
+        </ul>
+      </li>
+      <li>
+        Super admin: <ul>
+          <li>superadmin@hotmail.com</li>
+          <li>Pass1234</li>
+        </ul>
+      </li>
     </ul>
 
     <mat-card-actions>
-      <button mat-button (click)="onLogin()">Login</button>
-      <a class="pull-right" mat-button [routerLink]='["/register"]'>Register</a>
+      <div class="col-md-12">
+        <button mat-raised-button color="primary" (click)="onLogin()">Login</button>
+        <a class="pull-right" mat-button [routerLink]='["/register"]'>Register</a>
+      </div>
     </mat-card-actions>
+
   </div>
 </mat-card>
