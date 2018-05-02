@@ -14,7 +14,14 @@ const providers = [
   { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] }
 ];
 
-if (environment.production) {
+//console.log(environment, environment.production);
+//console.log(document.getElementsByTagName('base')[0].href);
+
+//if (environment.production) {
+//  enableProdMode();
+//}
+
+if (document.getElementsByTagName('base')[0].href !== 'http://localhost:5000/') {
   enableProdMode();
 }
 
