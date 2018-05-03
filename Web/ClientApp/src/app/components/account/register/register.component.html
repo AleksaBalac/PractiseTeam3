@@ -1,58 +1,62 @@
 <mat-card class="register-card">
-  <mat-card-header>
+  <div>
+    <mat-card-header>
 
-    <mat-card-title>Register</mat-card-title>
-    <mat-card-subtitle>Enter your information</mat-card-subtitle>
+      <mat-card-title>Register</mat-card-title>
+      <mat-card-subtitle>Enter your information</mat-card-subtitle>
 
-  </mat-card-header>
+    </mat-card-header>
 
-  <mat-card-content>
+    <mat-card-content>
 
-    <form class="example-form" [formGroup]="registerForm">
+      <form class="example-form" [formGroup]="registerForm">
 
-      <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width">
 
-        <input matInput placeholder="First name" [(ngModel)]="user.firstName" name="firstName" formControlName="firstName">
-        <mat-error *ngIf="registerForm.controls.firstName.invalid">
-          First Name is <strong>required</strong>
-        </mat-error>
+          <input matInput placeholder="First name" [(ngModel)]="user.firstName" name="firstName" formControlName="firstName">
+          <mat-error *ngIf="registerForm.controls.firstName.invalid">
+            First Name is <strong>required</strong>
+          </mat-error>
 
-      </mat-form-field>
+        </mat-form-field>
 
-      <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width">
 
-       <input matInput placeholder="Last name" [(ngModel)]="user.lastName" name="lastName" formControlName="lastName">
-        <mat-error *ngIf="registerForm.controls.lastName.invalid">
-          Last Name is <strong>required</strong>
-        </mat-error>
+          <input matInput placeholder="Last name" [(ngModel)]="user.lastName" name="lastName" formControlName="lastName">
+          <mat-error *ngIf="registerForm.controls.lastName.invalid">
+            Last Name is <strong>required</strong>
+          </mat-error>
 
-      </mat-form-field>
+        </mat-form-field>
 
 
-      <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width">
 
-        <input matInput placeholder="Email" [(ngModel)]="user.email" name="email" formControlName="email">
-        <mat-error *ngIf="registerForm.controls.email.invalid">
-          Please enter a valid email address
-        </mat-error>
+          <input matInput placeholder="Email" [(ngModel)]="user.email" name="email" formControlName="email">
+          <mat-error *ngIf="registerForm.controls.email.invalid">
+            Please enter a valid email address
+          </mat-error>
 
-      </mat-form-field>
+        </mat-form-field>
 
-      <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width">
 
-        <input matInput placeholder="Password" [(ngModel)]="user.password" name="password" type="password" formControlName="password">
-        <mat-error *ngIf="registerForm.controls.password.invalid">
-          Password is <strong>required</strong>
-        </mat-error>
+          <input matInput placeholder="Password" [(ngModel)]="user.password" name="password" type="password" formControlName="password">
+          <mat-error *ngIf="registerForm.controls.password.invalid">
+            Password is <strong>required</strong>
+          </mat-error>
 
-      </mat-form-field>
+        </mat-form-field>
 
-    </form>
+      </form>
 
-  </mat-card-content>
+    </mat-card-content>
 
-  <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="onRegister()">Register</button>
-    <a class="pull-right" mat-button [routerLink]='["/login"]'>Login</a>
-  </mat-card-actions>
+    <mat-card-actions>
+      <div class="col-md-12">
+        <button mat-raised-button color="primary" (click)="onRegister()">Register</button>
+        <a class="pull-right" mat-button [routerLink]='["/login"]'>Login</a>
+      </div>
+    </mat-card-actions>
+  </div>
 </mat-card>

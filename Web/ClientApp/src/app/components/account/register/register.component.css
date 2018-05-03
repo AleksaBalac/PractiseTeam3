@@ -1,15 +1,4 @@
-.example-form {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
-  padding: 0 10px;
-}
-
-.example-full-width {
-  width: 100%;
-}
-
 .register-card {
-  width: 60%;
+  width: 80%;
   margin: auto;
 }
