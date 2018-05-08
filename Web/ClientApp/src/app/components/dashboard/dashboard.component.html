@@ -5,10 +5,12 @@
 <div class="row" *ngIf="!showSpinner">
   <div class="col-md-6 col-sm-6 col-xs-12" *ngIf="companyChart">
     <h3>Company chart</h3>
+    <p>The chart below shows all the companies and the total number of items in each company.</p>
     <canvas id="companyChart"> {{ companyChart }}</canvas>
   </div>
   <div class="col-md-6 col-sm-6 col-xs-12" *ngIf="categoryChart">
     <h3>Categories chart</h3>
-    <canvas id="categoryChart"> {{ categoryChart }}</canvas>
+    <p>This chart presents different categories with the total number of items in each category.</p>
+    <canvas id="categoryChart"> {{ categoryChart }} </canvas>
   </div>
 </div>

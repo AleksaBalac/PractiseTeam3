@@ -1,4 +1,7 @@
-
+mat-row mat-cell:first-child,mat-header-row mat-header-cell:first-child {
+  max-width: 40px;
+  padding-top: 5px;
+}
 
 mat-cell {
   white-space: nowrap;
