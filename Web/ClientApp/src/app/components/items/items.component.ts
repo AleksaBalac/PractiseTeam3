@@ -139,11 +139,11 @@ export class ItemsComponent implements OnInit {
 
     this.selection.selected.forEach(item => {
       let inventoryItem: any = {
-        name: item.name,
-        description: item.description,
-        orderNumber: item.orderNumber,
-        value: item.value,
-        category: item.category.name
+        Name: item.name,
+        Description: item.description,
+        OrderNumber: item.orderNumber,
+        Value: item.value,
+        Category: item.category.name
       }
 
       list.push(inventoryItem);
